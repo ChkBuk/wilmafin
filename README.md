@@ -11,8 +11,9 @@
 - Oracle Database 19c+
 - Oracle APEX 24.2.5+
 
-```bash
+
 # Clone repository
+
 git clone https://github.com/ChkBuk/wilmafin.git
 cd wilmafin
 
@@ -22,7 +23,7 @@ sql username/password@host:port/service
 @ddl/wilma-ddl.sql
 @data/wilma-setup-data.sql
 
--- Upload following data files.
+## Upload following data files.
 data/am_configuration.xlsx into am_configuration table
 data/loan_calculator.xlsx into loan_calculator table
 
