@@ -3,13 +3,6 @@
 ![Oracle APEX](https://img.shields.io/badge/Oracle%20APEX-24.2.5+-red.svg)
 ![Oracle DB](https://img.shields.io/badge/Oracle%20Database-19c+-blue.svg)
 
-## 📂 Repository Structure
-
-wilmafin-apex-app/
-├── f105/ # APEX application export files (SQL)
-├── ddl/ # Database schema scripts
-├── data/ # Set up data
-└── README.md
 
 ## 🚀 Quick Setup
 
