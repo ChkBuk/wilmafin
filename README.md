@@ -24,8 +24,8 @@ sql username/password@host:port/service
 @data/wilma-setup-data.sql
 
 ## Upload following data files.
-data/am_configuration.xlsx into am_configuration table
-data/loan_calculator.xlsx into loan_calculator table
+- data/am_configuration.xlsx into am_configuration table
+- data/loan_calculator.xlsx into loan_calculator table
 
 ## Via SQLcl
 sql username/password@host:port/service @f105/install.sql
@@ -38,10 +38,9 @@ sql username/password@host:port/service @f105/install.sql
 
 
 ## 📞 Support
-✉️ **Email**: cbkulawardana@gmail.com
-💬 **Slack**: `#wilmafin-dev`
+- ✉️ **Email**: cbkulawardana@gmail.com
+- 💬 **Slack**: `#wilmafin-dev`
 
----
 
 ✨ **🚀 Happy Developing!** ✨
 *The WilmaFin Team*
