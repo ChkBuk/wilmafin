@@ -12,7 +12,7 @@
 - Oracle APEX 24.2.5+
 
 
-# Clone repository
+## Clone repository
 
 git clone https://github.com/ChkBuk/wilmafin.git
 cd wilmafin
@@ -27,10 +27,10 @@ sql username/password@host:port/service
 data/am_configuration.xlsx into am_configuration table
 data/loan_calculator.xlsx into loan_calculator table
 
-# Via SQLcl
+## Via SQLcl
 sql username/password@host:port/service @f105/install.sql
 
-# Via APEX Builder (GUI):
+## Via APEX Builder (GUI):
 1. Login to APEX Workspace
 2. App Builder → Import
 3. Create 105.zip file using f105 folder
