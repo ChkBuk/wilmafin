@@ -42,10 +42,6 @@ sql username/password@host:port/service @f105/install.sql
 
 ---
 
-<div align="center">
-
 ✨ **🚀 Happy Developing!** ✨
 *The WilmaFin Team*
 
-</div>
-```
