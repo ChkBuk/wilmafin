@@ -1,0 +1,28 @@
+prompt --application/shared_components/files/icons_filter_icon_2_svg
+begin
+--   Manifest
+--     APP STATIC FILES: 105
+--   Manifest End
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2024.11.30'
+,p_release=>'24.2.5'
+,p_default_workspace_id=>7595803988746305
+,p_default_application_id=>105
+,p_default_id_offset=>0
+,p_default_owner=>'WILMAFIN'
+);
+wwv_flow_imp.g_varchar2_table := wwv_flow_imp.empty_varchar2_table;
+wwv_flow_imp.g_varchar2_table(1) := '3C7376672076696577426F783D223020302033322033322220786D6C3A73706163653D2270726573657276652220786D6C6E733D22687474703A2F2F7777772E77332E6F72672F323030302F737667223E3C7061746820643D224D332E32343120372E36';
+wwv_flow_imp.g_varchar2_table(2) := '343620313320313976396C362D34762D356C392E3735392D31312E333534632E3535362D2E36352E3038392D312E3634362D2E3737332D312E36343648342E303134632D2E38363220302D312E3332392E3939362D2E37373320312E3634367A22206669';
+wwv_flow_imp.g_varchar2_table(3) := '6C6C3D226E6F6E6522207374726F6B653D222366666666666622207374726F6B652D6C696E656361703D22726F756E6422207374726F6B652D6C696E656A6F696E3D22726F756E6422207374726F6B652D6D697465726C696D69743D2231302220737472';
+wwv_flow_imp.g_varchar2_table(4) := '6F6B652D77696474683D22322220636C6173733D227374726F6B652D303030303030223E3C2F706174683E3C2F7376673E';
+wwv_flow_imp_shared.create_app_static_file(
+ p_id=>wwv_flow_imp.id(15634765715318545)
+,p_file_name=>'icons/filter_icon_2.svg'
+,p_mime_type=>'image/svg+xml'
+,p_file_charset=>'utf-8'
+,p_file_content => wwv_flow_imp.varchar2_to_blob(wwv_flow_imp.g_varchar2_table)
+);
+wwv_flow_imp.component_end;
+end;
+/

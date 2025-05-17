@@ -1,0 +1,323 @@
+prompt --application/shared_components/workflow/workflows/roi_workflow
+begin
+--   Manifest
+--     WORKFLOW: ROI Workflow
+--   Manifest End
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2024.11.30'
+,p_release=>'24.2.5'
+,p_default_workspace_id=>7595803988746305
+,p_default_application_id=>105
+,p_default_id_offset=>0
+,p_default_owner=>'WILMAFIN'
+);
+wwv_flow_imp_shared.create_workflow(
+ p_id=>wwv_flow_imp.id(15029879911839076)
+,p_name=>'ROI Workflow'
+,p_static_id=>'ROI_WORKFLOW'
+,p_title=>'Inquiry Workflow'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(14989451658663226)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Client Name'
+,p_static_id=>'CLIENT_NAME'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(14989543930663227)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Client Reference'
+,p_static_id=>'CLIENT_REF'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(14990778642663239)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Company Email'
+,p_static_id=>'COMPANY_EMAIL'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15030047510839078)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Client Email'
+,p_static_id=>'CLIENT_EMAIL'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15657844121334401)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Date of Join'
+,p_static_id=>'DATE_OF_JOIN'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15657962137334402)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Client Address'
+,p_static_id=>'CLIENT_ADDRESS'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15658301319334406)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Client Phone No'
+,p_static_id=>'CLIENT_PHONE'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15658499050334407)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Anual Income'
+,p_static_id=>'ANNUAL_INCOME'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_is_required=>false
+,p_format_mask=>'FML999G999G999G999G990D00'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15658554186334408)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Loan Amount'
+,p_static_id=>'LOAN_AMOUNT'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15658691967334409)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Priority Level'
+,p_static_id=>'PRIORITY_LEVEL'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(15659501487334418)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_label=>'Requirement'
+,p_static_id=>'REQUIREMENT'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_version(
+ p_id=>wwv_flow_imp.id(14989688742663228)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_version=>'1.01'
+,p_state=>'ACTIVE'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(14989736797663229)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'Start'
+,p_static_id=>'New'
+,p_display_sequence=>10
+,p_activity_type=>'NATIVE_WORKFLOW_START'
+,p_diagram=>'{"position":{"x":700,"y":970},"z":1}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(14989975301663231)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'Send ACK'
+,p_static_id=>'New_1'
+,p_label=>'Acknowledgement'
+,p_display_sequence=>20
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'Wilma Financial Services <&APP_EMAIL.>'
+,p_attribute_02=>'&CLIENT_EMAIL.'
+,p_attribute_05=>'Wilma Financial Service <info@wilmafinance.com.au>'
+,p_attribute_10=>'N'
+,p_attribute_11=>wwv_flow_imp.id(15291939401699518)
+,p_attribute_12=>'{"CLIENT_NAME":"&CLIENT_NAME.","CLIENT_REF":"&CLIENT_REF."}'
+,p_diagram=>'{"position":{"x":890,"y":970},"z":2}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(14990143174663233)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'End'
+,p_static_id=>'New_2'
+,p_display_sequence=>30
+,p_activity_type=>'NATIVE_WORKFLOW_END'
+,p_attribute_01=>'COMPLETED'
+,p_diagram=>'{"position":{"x":1600,"y":1120},"z":3}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(14990398807663235)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'Waiting Period'
+,p_static_id=>'New_3'
+,p_display_sequence=>40
+,p_activity_type=>'NATIVE_WORKFLOW_WAIT'
+,p_attribute_01=>'SQL_QUERY'
+,p_attribute_02=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT SYSDATE + (config_value * INTERVAL ''1'' MINUTE) AS reminder_time',
+'FROM am_configuration ',
+'WHERE upper(config_name) = ''NO_FOLLOWUP_DAYS'';'))
+,p_diagram=>'{"position":{"x":1150,"y":1140},"z":6}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(14990561767663237)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'Follow Up'
+,p_static_id=>'New_4'
+,p_display_sequence=>50
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'Wilma Financial Services <&APP_EMAIL.>'
+,p_attribute_02=>'&COMPANY_EMAIL.'
+,p_attribute_05=>'Wilma Financial Service <info@wilmafinance.com.au>'
+,p_attribute_10=>'N'
+,p_attribute_11=>wwv_flow_imp.id(16443410301774237)
+,p_attribute_12=>'{"CLIENT_REF":"&CLIENT_REF.","CLIENT_NAME":"&CLIENT_NAME.","DATE_OF_JOIN":"&DATE_OF_JOIN.","CLIENT_ADDRESS":"&CLIENT_ADDRESS.","CLIENT_EMAIL":"&CLIENT_EMAIL.","CLIENT_PHONE":"&CLIENT_PHONE."}'
+,p_diagram=>'{"position":{"x":1280,"y":1140},"z":8}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(15658090829334403)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_name=>'Notify Company'
+,p_static_id=>'New_5'
+,p_display_sequence=>60
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'Wilma Financial Services <&APP_EMAIL.>'
+,p_attribute_02=>'&COMPANY_EMAIL.'
+,p_attribute_05=>'Wilma Financial Service <info@wilmafinance.com.au>'
+,p_attribute_10=>'N'
+,p_attribute_11=>wwv_flow_imp.id(16420915392525935)
+,p_attribute_12=>'{"CLIENT_NAME":"&CLIENT_NAME.","CLIENT_EMAIL":"&CLIENT_EMAIL.","CLIENT_PHONE":"&CLIENT_PHONE.","CLIENT_ADDRESS":"&CLIENT_ADDRESS.","ANNUAL_INCOME":"&ANNUAL_INCOME.","LOAN_AMOUNT":"&LOAN_AMOUNT.","REQUIREMENT":"&REQUIREMENT.","PRIORITY_LEVEL":"&PRIORI'
+||'TY_LEVEL.","CLIENT_REF":"&CLIENT_REF."}'
+,p_diagram=>'{"position":{"x":850,"y":1120},"z":10}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(14989814575663230)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(14989736797663229)
+,p_to_activity_id=>wwv_flow_imp.id(14989975301663231)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":4,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(15659628775334419)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(14989975301663231)
+,p_to_activity_id=>wwv_flow_imp.id(15658090829334403)
+,p_diagram=>'{"source":{"name":"top","args":{"dx":0,"dy":10}},"target":{"name":"topLeft","args":{"dx":"68.182%","dy":"50%","rotate":true}},"vertices":[],"z":11,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(14990437666663236)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(14990398807663235)
+,p_to_activity_id=>wwv_flow_imp.id(14990561767663237)
+,p_diagram=>'{"source":{"args":{"dx":-10,"dy":0},"name":"right"},"target":{"name":"topLeft","args":{"dx":"18.182%","dy":"50%","rotate":true}},"vertices":[],"z":7,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(14990631685663238)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(14990561767663237)
+,p_to_activity_id=>wwv_flow_imp.id(14990143174663233)
+,p_diagram=>'{"source":{"name":"right","args":{"dx":-10,"dy":0}},"target":{"name":"topLeft","args":{"dx":"50%","dy":"83.333%","rotate":true}},"vertices":[],"z":9,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(14990068912663232)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(15658090829334403)
+,p_to_activity_id=>wwv_flow_imp.id(14990398807663235)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.091%","dy":"83.333%","rotate":true}},"target":{"args":{"dx":"50%","dy":"50%","rotate":true},"name":"topLeft"},"vertices":[],"z":5,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(14990263905663234)
+,p_workflow_version_id=>wwv_flow_imp.id(14989688742663228)
+,p_participant_type=>'OWNER'
+,p_name=>'Owner'
+,p_identity_type=>'USER'
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>':APP_USER'
+);
+wwv_flow_imp_shared.create_workflow_version(
+ p_id=>wwv_flow_imp.id(15030476585839079)
+,p_workflow_id=>wwv_flow_imp.id(15029879911839076)
+,p_version=>'1.0'
+,p_state=>'INACTIVE'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(15030818614839080)
+,p_workflow_version_id=>wwv_flow_imp.id(15030476585839079)
+,p_name=>'Start'
+,p_static_id=>'New'
+,p_display_sequence=>10
+,p_activity_type=>'NATIVE_WORKFLOW_START'
+,p_diagram=>'{"position":{"x":700,"y":970},"z":1}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(15031324108839081)
+,p_workflow_version_id=>wwv_flow_imp.id(15030476585839079)
+,p_name=>'Activity'
+,p_static_id=>'New_1'
+,p_display_sequence=>20
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'&APP_EMAIL.'
+,p_attribute_02=>'&CLIENT_EMAIL.'
+,p_attribute_10=>'Y'
+,p_attribute_11=>wwv_flow_imp.id(15291939401699518)
+,p_attribute_12=>'{"CLIENT_NAME":"&CLIENT_NAME.","CLIENT_REF":"&CLIENT_REF."}'
+,p_diagram=>'{"position":{"x":890,"y":970},"z":2}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(15031829302839082)
+,p_workflow_version_id=>wwv_flow_imp.id(15030476585839079)
+,p_name=>'End'
+,p_static_id=>'New_2'
+,p_display_sequence=>30
+,p_activity_type=>'NATIVE_WORKFLOW_END'
+,p_attribute_01=>'COMPLETED'
+,p_diagram=>'{"position":{"x":1240,"y":970},"z":3}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(15032303903839082)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(15030818614839080)
+,p_to_activity_id=>wwv_flow_imp.id(15031324108839081)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":4,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(15032930780839083)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(15031324108839081)
+,p_to_activity_id=>wwv_flow_imp.id(15031829302839082)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":5,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(15033514490839084)
+,p_workflow_version_id=>wwv_flow_imp.id(15030476585839079)
+,p_participant_type=>'OWNER'
+,p_name=>'Owner'
+,p_identity_type=>'USER'
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>':APP_USER'
+);
+wwv_flow_imp.component_end;
+end;
+/

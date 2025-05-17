@@ -1,0 +1,315 @@
+---
+# ====== Application: WILMAFIN ===============================
+identification: 
+  name: WILMAFIN
+  alias: WILMAFIN
+  version: Wilma Financial Services © 2025
+  application-group: Starter Apps # 186274431976869492
+
+row-search: 
+  tokenize: true
+  text-query-function: None
+
+availability: 
+  status: Available with Developer Toolbar
+  build-status: Run and Build Application
+
+error-handling: 
+  default-display-location: Inline with Field and in Notification
+
+report-printing: 
+  type: Native Printing
+
+advanced: 
+  friendly-urls: true
+  allow-feedback: true
+  logging: true
+  debugging: false
+  compatibility-mode: 24.2
+  accessible-read-only-items: true
+  pass-ecid: Y
+  copyright-banner: Wilma Financial Services © 2025. All Rights Reserved Terms of Use and Privacy Policy
+
+authentication: 
+  public-user: APEX_PUBLIC_USER
+  authentication-scheme: Oracle APEX Accounts # 14309666481069699
+
+authorization: 
+  source-for-role-or-group-schemes: Access Control User Role Assignments
+
+session-management: 
+  rejoin-sessions: Enabled for All Sessions
+
+session-state-protection: 
+  enabled: true
+
+security: 
+  deep-linking: Disabled
+  browser-cache: Disabled
+  embed-in-frames: Deny
+  referrer-policy: strict-origin
+  html-escaping-mode: Extended
+  runtime-api-usage: 
+  - Modify This Application
+
+database-session: 
+  parsing-schema: WILMAFIN
+
+globalization: 
+  primary-language: English (en)
+  document-direction: Language Default
+  language-derived-from: Application Primary Language
+  automatic-time-zone: true
+  automatic-csv-encoding: true
+
+application-format-masks: 
+  date: DS
+  date-time: DS
+  timestamp: DS
+  timestamp-time-zone: DS
+
+character-value-comparison: 
+  behavior: Database session NLS setting (default)
+
+logo: 
+  type: Text
+
+progressive-web-app: 
+  enable: true
+  installable: true
+  display: Fullscreen
+  screen-orientation: Any
+  theme-color: '#0192ad'
+  background-color: '#ffffff'
+  ios-status-bar-style: Translucent
+  custom-manifest: |
+    {
+      "name": "WilmaFin",
+      "short_name": "WilmaFin",
+      "display": "fullscreen",
+      "background_color": "#009db2",
+      "theme_color": "#009db2",
+      "orientation": "portrait"
+    }
+    
+  enable-push-notifications: false
+
+navigation: 
+  home-url: 
+    url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::'
+    page: 1 # Home
+
+  login-url: 
+    url: 'f?p=&APP_ID.:LOGIN:&APP_SESSION.::&DEBUG.:::'
+    page: LOGIN
+
+navigation-menu: 
+  list-template: WM Side Navigation Menu
+  template-options: 
+  - '#DEFAULT#'
+  - js-defaultCollapsed
+  - js-navCollapsed--hidden
+  - t-TreeNav--styleB
+  list-position: Side
+  list: Side Menu Bar # 15532001789282827
+
+navigation-bar: 
+  implementation: List
+  list: Navigation Bar # 14311628860069724
+  list-template: Navigation Bar
+  template-options: 
+  - '#DEFAULT#'
+
+javascript: 
+  include-jquery-migrate: false
+
+attributes: 
+  theme: Universal Theme # 42
+  global-page: 0
+  enable-end-users-to-choose-theme-style: false
+  add-"built-with-apex"-to-footer: false
+  auto-dismiss-success-messages: true
+
+subscription: 
+  version-number: 39508884711561
+
+substitutions: 
+- # ====== Substitution: APP_NAME ==============================
+  id: 1
+  identification: 
+    name: APP_NAME
+
+  value: 
+    static-value: WILMAFIN
+
+- # ====== Substitution: APP_GOOGLE_MAPS_API_KEY ===============
+  id: 2
+  identification: 
+    name: APP_GOOGLE_MAPS_API_KEY
+
+  value: 
+    static-value: AIzaSyC9Gxptyfk_uc98mafSaBkXDsQuQbjDy2U
+
+component-settings: 
+- # ====== Component Setting: NATIVE_DISPLAY_SELECTOR ==========
+  id: 14305129673069693
+  identification: 
+    name: NATIVE_DISPLAY_SELECTOR
+    type: Region
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_DATE_PICKER_APEX ==========
+  id: 14305452327069694
+  identification: 
+    name: NATIVE_DATE_PICKER_APEX
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_MAP_REGION ================
+  id: 14305761789069694
+  identification: 
+    name: NATIVE_MAP_REGION
+    type: Region
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_IR ========================
+  id: 14306060679069694
+  identification: 
+    name: NATIVE_IR
+    type: Region
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_SELECT_MANY ===============
+  id: 14306336489069695
+  identification: 
+    name: NATIVE_SELECT_MANY
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_GEOCODING =================
+  id: 14306691683069695
+  identification: 
+    name: NATIVE_GEOCODING
+    type: Process
+
+  settings: 
+    attribute-1: RELAX_HOUSE_NUMBER
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_YES_NO ====================
+  id: 14306969419069695
+  identification: 
+    name: NATIVE_YES_NO
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_BOSS ======================
+  id: 14307262700069695
+  identification: 
+    name: NATIVE_BOSS
+    type: REST Data Source
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_SINGLE_CHECKBOX ===========
+  id: 14307544833069695
+  identification: 
+    name: NATIVE_SINGLE_CHECKBOX
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_GEOCODED_ADDRESS ==========
+  id: 14307881000069696
+  identification: 
+    name: NATIVE_GEOCODED_ADDRESS
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_COLOR_PICKER ==============
+  id: 14308103523069696
+  identification: 
+    name: NATIVE_COLOR_PICKER
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_STAR_RATING ===============
+  id: 14308481313069696
+  identification: 
+    name: NATIVE_STAR_RATING
+    type: Item
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_ADFBC =====================
+  id: 14308781779069696
+  identification: 
+    name: NATIVE_ADFBC
+    type: REST Data Source
+
+  subscription: 
+    version-number: 39508145762782
+
+- # ====== Component Setting: NATIVE_OPEN_AI_ASSISTANT =========
+  id: 14309063437069697
+  identification: 
+    name: NATIVE_OPEN_AI_ASSISTANT
+    type: Dynamic Action
+
+  subscription: 
+    version-number: 39508145762782
+
+application-settings: 
+- # ====== Application Setting: GOOGLE_MAPS_API_KEY ============
+  id: 14822182677232151
+  identification: 
+    name: GOOGLE_MAPS_API_KEY
+
+  value: 
+    value: AIzaSyC9Gxptyfk_uc98mafSaBkXDsQuQbjDy2U
+    required: false
+
+  advanced: 
+    on-upgrade-keep-value: true
+
+  subscription: 
+    version-number: 39508181520783
+
+pwa-shortcuts: 
+- # ====== PWA Shortcut: Wilma =================================
+  id: 19337782437140780
+  identification: 
+    name: Wilma
+
+  layout: 
+    sequence: 10
+
+  link: 
+    target: 
+      url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::'
+      page: 1 # Home
+
+  configuration: 
+    icon-url: pwa/shortcut-icon-10.png
+

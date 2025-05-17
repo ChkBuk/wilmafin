@@ -1,0 +1,447 @@
+---
+- # ====== List: Navigation Menu ===============================
+  id: 14310404614069704
+  identification: 
+    name: Navigation Menu
+
+  subscription: 
+    version-number: 39508251068820
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Home =========================================
+    id: 14322117346069787
+    label: 
+      label: Home
+
+    icon: 
+      image/icon-css-classes: fa fa-home fa-3x
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::::'
+        page: 1 # Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Seach Customers ==============================
+    id: 14344265193989708
+    label: 
+      label: Seach Customers
+
+    icon: 
+      image/icon-css-classes: fa-table-search
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 2
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::::'
+        page: 2 # Seach Customers
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Create New Customer ==========================
+    id: 14494665857123206
+    label: 
+      label: Create New Customer
+
+    icon: 
+      image/icon-css-classes: fa-plus
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 3
+      - 4
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.::::'
+        page: 4 # Dashboard
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    configuration: 
+      build-option: Commented Out # 14309379580069697
+
+  - # ====== Entry: Add Customer =================================
+    id: 14916465533473106
+    label: 
+      label: Add Customer
+
+    icon: 
+      image/icon-css-classes: fa-plus-circle-o
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 3
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::::'
+        page: 3 # Add Customer
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Navigation Bar ================================
+  id: 14311628860069724
+  identification: 
+    name: Navigation Bar
+
+  subscription: 
+    version-number: 39508413434702
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Install App ==================================
+    id: 14339944125954271
+    label: 
+      label: Install App
+
+    icon: 
+      image/icon-css-classes: fa-cloud-download
+
+    layout: 
+      sequence: 1
+
+    is-current: 
+      type: Never
+
+    link: 
+      target: '#action$a-pwa-install'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: a-pwaInstall
+
+- # ====== List: Drawer Menu ===================================
+  id: 15485743804587709
+  identification: 
+    name: Drawer Menu
+
+  subscription: 
+    version-number: 39508480234236
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Favourits ====================================
+    id: 15499307918776099
+    label: 
+      label: Favourits
+
+    icon: 
+      image/icon-css-classes: fa-star
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.::::'
+        page: 5 # Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Side Menu Bar =================================
+  id: 15532001789282827
+  identification: 
+    name: Side Menu Bar
+
+  subscription: 
+    version-number: 39508596145900
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Install App ==================================
+    id: 15532237836282827
+    label: 
+      label: Install App
+
+    icon: 
+      image/icon-css-classes: fa-cloud-download
+
+    layout: 
+      sequence: 100
+
+    is-current: 
+      type: Never
+
+    link: 
+      target: '#action$a-pwa-install'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: a-pwaInstall
+
+    configuration: 
+      build-option: Commented Out # 14309379580069697
+
+  - # ====== Entry: &APP_USER. ===================================
+    id: 15532689095282828
+    label: 
+      label: '&APP_USER.'
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 1
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '#'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: has-username
+
+  - # ====== Entry: Sign Out =====================================
+    id: 15533421755282828
+    label: 
+      label: Sign Out
+
+    icon: 
+      image/icon-css-classes: fa-sign-out
+
+    layout: 
+      sequence: 30
+      parent-entry: '&APP_USER.' # 15532689095282828
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '&LOGOUT_URL.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: User is Authenticated (not public)
+
+  - # ====== Entry: Version ======================================
+    id: 15534814040295624
+    label: 
+      label: Version
+
+    layout: 
+      sequence: 150
+
+    is-current: 
+      type: Target Page
+
+    user-defined-attributes: 
+      translatable: false
+
+    configuration: 
+      build-option: Commented Out # 14309379580069697
+
+  - # ====== Entry: Home =========================================
+    id: 16096441455932728
+    label: 
+      label: Home
+
+    icon: 
+      image/icon-css-classes: fa-home
+
+    layout: 
+      sequence: 2
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::::'
+        page: 1 # Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Add New Customer =============================
+    id: 16096775381945006
+    label: 
+      label: Add New Customer
+
+    icon: 
+      image/icon-css-classes: fa-plus
+
+    layout: 
+      sequence: 3
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::::'
+        page: 3 # Add Customer
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Search Customer ==============================
+    id: 16097079680951787
+    label: 
+      label: Search Customer
+
+    icon: 
+      image/icon-css-classes: fa-table-search
+
+    layout: 
+      sequence: 4
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::::'
+        page: 2 # Seach Customers
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Settings =====================================
+    id: 16238384640680832
+    label: 
+      label: Settings
+
+    icon: 
+      image/icon-css-classes: fa-gear
+
+    layout: 
+      sequence: 5
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.::::'
+        page: 10 # Configuration
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Application Configuration =====================
+  id: 16199372858265099
+  identification: 
+    name: Application Configuration
+
+  subscription: 
+    version-number: 39508475059667
+
+  source: 
+    type: Static Values
+
+  configuration: 
+    build-option: 'Feature: Configuration Options' # 16189789116265048
+
+  entries: 
+  - # ====== Entry: Company email address ========================
+    id: 16199759220265100
+    label: 
+      label: Company email address
+
+    icon: 
+      image/icon-css-classes: fa-envelope-edit
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10010:&SESSION.::&DEBUG.:10010:::'
+        page: 10010 # Configuration Options
+        clear-cache: 10010
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Enable or disable application features
+

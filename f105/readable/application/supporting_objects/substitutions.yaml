@@ -1,0 +1,17 @@
+---
+- # ====== Substitution: APP_NAME ==============================
+  id: 1
+  identification: 
+    name: APP_NAME
+
+  installation: 
+    prompt-substitution: false
+
+- # ====== Substitution: APP_GOOGLE_MAPS_API_KEY ===============
+  id: 2
+  identification: 
+    name: APP_GOOGLE_MAPS_API_KEY
+
+  installation: 
+    prompt-substitution: false
+

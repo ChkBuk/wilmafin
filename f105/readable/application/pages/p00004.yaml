@@ -1,0 +1,408 @@
+---
+# ====== Page: Dashboard =====================================
+id: 4
+identification: 
+  name: Dashboard
+  alias: DASHBOARD
+  title: Dashboard
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+html-header: 
+  html-header: |
+    <meta name="theme-color" content="#004a5a">
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Dashboard ===================================
+  id: 16284553672233240
+  identification: 
+    name: Dashboard
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: SELECT COUNT(*) AS total_customers FROM customers;
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P4_ORDER_BY
+      order-bys: 
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: 2
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 16284656208233241
+    appearance: 
+      layout: Grid
+      grid-columns: Auto
+
+    title: 
+      advanced-formatting: true
+      html-expression: Total customer
+
+    subtitle: 
+      advanced-formatting: false
+
+    body: 
+      advanced-formatting: false
+
+    secondary-body: 
+      advanced-formatting: true
+      html-expression: <h1>&TOTAL_CUSTOMERS.</h1>
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: No Media
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+- # ====== Region: Dashboard ===================================
+  id: 16284733606233242
+  identification: 
+    name: Dashboard
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: SELECT COUNT(*) AS total_customers FROM customers;
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P4_ORDER_BY
+      order-bys: 
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: 3
+    new-column: true
+    column-span: 1
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 16284854823233243
+    appearance: 
+      layout: Grid
+      grid-columns: Auto
+
+    title: 
+      advanced-formatting: true
+      html-expression: Total customer
+
+    subtitle: 
+      advanced-formatting: false
+
+    body: 
+      advanced-formatting: false
+
+    secondary-body: 
+      advanced-formatting: true
+      html-expression: <h1>&TOTAL_CUSTOMERS.</h1>
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: No Media
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 16719110110843476
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 14309936853069701
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Dashboard ===================================
+  id: 16719885148843480
+  identification: 
+    name: Dashboard
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: SELECT COUNT(*) AS total_customers FROM customers;
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P4_ORDER_BY
+      order-bys: 
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+      - key: TOTAL_CUSTOMERS
+        clause: '"TOTAL_CUSTOMERS" asc'
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: 1
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 16720333724843481
+    appearance: 
+      layout: Grid
+      grid-columns: Auto
+
+    title: 
+      advanced-formatting: true
+      html-expression: Total customer
+
+    subtitle: 
+      advanced-formatting: false
+
+    body: 
+      advanced-formatting: false
+
+    secondary-body: 
+      advanced-formatting: true
+      html-expression: <h1>&TOTAL_CUSTOMERS.</h1>
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: No Media
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+page-items: 
+- # ====== Page Item: P4_ORDER_BY ==============================
+  id: 16720815352843485
+  identification: 
+    name: P4_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Dashboard # 16719885148843480
+    slot: ORDER_BY_ITEM
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:Total Customers;TOTAL_CUSTOMERS,Total Customers;TOTAL_CUSTOMERS'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: TOTAL_CUSTOMERS
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+

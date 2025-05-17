@@ -1,0 +1,242 @@
+---
+- # ====== List Template: WM Side Navigation Menu ==============
+  id: 15639645277292493
+  identification: 
+    name: WM Side Navigation Menu
+    identifier: WM_SIDE_NAVIGATION_MENU
+    class: Hierarchical Expanding
+
+  advanced: 
+    translatable: false
+
+  template-options: 
+    preset: 
+    - t-TreeNav--styleB
+    - js-navCollapsed--hidden
+    default: 
+    - js-defaultCollapsed
+
+  list: 
+    before-rows: |
+      <div class="t-Body-nav" id="t_Body_nav" role="navigation" aria-label="&"APP_TEXT$APEX.TEMPLATE.APPLICATION".">
+        <div class="a-TreeView t-TreeNav #COMPONENT_CSS_CLASSES#" id="t_TreeNav" data-id="#PARENT_STATIC_ID#_tree" aria-label="&"APP_TEXT$APEX.TEMPLATE.MAIN_NAV_LABEL".">
+          <ul>
+      
+
+  entry: 
+    current: |
+      <li data-current="true" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#">
+        <a href="#LINK#" title="#A04#" #APEX_CSP_DISPLAY_NONE# target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+        <div class="a-TreeView-node a-TreeView-node--topLevel" aria-hidden="true">
+          <div role="none" class="a-TreeView-row"></div>
+          <div role="none" class="a-TreeView-content">
+            <span class="fa #ICON_CSS_CLASSES#"></span>
+            <span class="a-TreeView-label">#TEXT_ESC_SC#</span>
+          </div>
+        </div>
+      </li>
+      
+    current-with-sublist: |
+      <li data-current="true" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#">
+        <a href="#LINK#" title="#A04#" #APEX_CSP_DISPLAY_NONE# target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+        <div class="a-TreeView-node a-TreeView-node--topLevel" aria-hidden="true">
+          <div role="none" class="a-TreeView-row"></div>
+          <div role="none" class="a-TreeView-content">
+            <span class="fa #ICON_CSS_CLASSES#"></span>
+            <span class="a-TreeView-label">#TEXT_ESC_SC#</span>
+          </div>
+        </div>
+      
+    noncurrent: |
+      <li data-current="false" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#">
+        <a href="#LINK#" title="#A04#" #APEX_CSP_DISPLAY_NONE# target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+        <div class="a-TreeView-node a-TreeView-node--topLevel" aria-hidden="true">
+          <div role="none" class="a-TreeView-row"></div>
+          <div role="none" class="a-TreeView-content">
+            <span class="fa #ICON_CSS_CLASSES#"></span>
+            <span class="a-TreeView-label">#TEXT_ESC_SC#</span>
+          </div>
+        </div>
+      </li>
+    noncurrent-with-sublist: |
+      <li data-current="false" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#">
+        <a href="#LINK#" title="#A04#" #APEX_CSP_DISPLAY_NONE# target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+        <div class="a-TreeView-node a-TreeView-node--topLevel" aria-hidden="true">
+          <div role="none" class="a-TreeView-row"></div>
+          <div role="none" class="a-TreeView-content">
+            <span class="fa #ICON_CSS_CLASSES#"></span>
+            <span class="a-TreeView-label">#TEXT_ESC_SC#</span>
+          </div>
+        </div>
+      
+
+  sublist: 
+    before-rows: '<ul #APEX_CSP_DISPLAY_NONE#>'
+    after-rows: </ul></li>
+
+  sublist-entry: 
+    current: <li data-current="true" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#"><a href="#LINK#" title="#A04#" target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a></li>
+    current-with-sublist: <li data-current="true" data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#"><a href="#LINK#" title="#A04#" target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+    noncurrent: <li data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#"><a href="#LINK#" title="#A04#" target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a></li>
+    noncurrent-with-sublist-items: <li data-id="#A01#" data-disabled="#A02#" data-icon="#ICON_CSS_CLASSES#" data-shortcut="#A05#"><a href="#LINK#" title="#A04#" target="#A06#" data-otel-label="#A10#">#TEXT_ESC_SC#</a>
+
+  after-list-entry: 
+    after-rows: |2
+          </ul>
+        </div>
+      </div>
+      <script #APEX_CSP_NONCE_ATTRIBUTE#>
+      (() => {
+        const pref = "ORA_WWV_apex.toggleCore.nav.&APP_ID..preferenceForExpanded",
+              nav  = document.getElementById('t_TreeNav').classList,
+              body = document.getElementById('t_PageBody');
+        if ( !sessionStorage.getItem( pref ) ) { sessionStorage.setItem( pref, !nav.contains('js-defaultCollapsed') ); }
+        if ( nav.contains('js-navCollapsed--default') ) {
+            body?.classList.add('js-navCollapsed--icons');
+            if ( sessionStorage.getItem( pref ) === "false" ) { body?.classList.add('js-navCollapsed'); }
+        }
+        if ( sessionStorage.getItem( pref ) === "true" && window.matchMedia("(min-width: " + getComputedStyle(document.documentElement).getPropertyValue("--js-mq-lg") + ")").matches) { body?.classList.add('js-navExpanded'); }
+        for (const label of document.querySelectorAll(".a-TreeView .a-TreeView-label")) {
+            label.textContent = label.textContent.replaceAll(/\[(.*?)\]/ig, '');
+        }
+      })();
+      </script>
+
+  javascript: 
+    file-urls: 
+    - '#APEX_FILES#libraries/apex/#MIN_DIRECTORY#widget.treeView#MIN#.js?v=#APEX_VERSION#'
+    execute-when-page-loads: apex.jQuery('body').addClass('t-PageBody--leftNav');
+
+  attribute-descriptions: 
+    a01: ID Attribute
+    a02: Disabled (True/False)
+    a04: Title Attribute (Used By Actions Only)
+    a05: Shortcut Key
+    a06: Link Target
+    a10: OpenTelemetry Label
+
+  template-options: 
+  - # ====== Template Option: Style A ============================
+    id: 15640440270292504
+    identification: 
+      name: Style A
+      identifier: STYLE_A
+      group: Style
+      sequence: 20
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - t-TreeNav--styleA
+
+    help: 
+      help-text: Style Variation A
+
+  - # ====== Template Option: Style B ============================
+    id: 15641107589292505
+    identification: 
+      name: Style B
+      identifier: STYLE_B
+      group: Style
+      sequence: 30
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - t-TreeNav--styleB
+
+    help: 
+      help-text: Style Variation B
+
+  - # ====== Template Option: Classic ============================
+    id: 15641816276292505
+    identification: 
+      name: Classic
+      identifier: STYLE_C
+      group: Style
+      sequence: 10
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - t-TreeNav--classic
+
+    help: 
+      help-text: Classic Style
+
+  - # ====== Template Option: Hidden =============================
+    id: 15642662879292506
+    identification: 
+      name: Hidden
+      identifier: COLLAPSE_STYLE_HIDDEN
+      group: Collapse Mode
+      sequence: 20
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - js-navCollapsed--hidden
+
+    help: 
+      help-text: Completely hide the navigation menu when it is collapsed.
+
+  - # ====== Template Option: Add Actions ========================
+    id: 15643019133292506
+    identification: 
+      name: Add Actions
+      identifier: ADD_ACTIONS
+      sequence: 1
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - js-addActions
+
+    help: 
+      help-text: Use this option to add shortcuts for menu items. Note that actions.js must be included on your page to support this functionality.
+
+  - # ====== Template Option: Icon ===============================
+    id: 15643727621292507
+    identification: 
+      name: Icon
+      identifier: ICON_DEFAULT
+      group: Collapse Mode
+      sequence: 10
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - js-navCollapsed--default
+
+    help: 
+      help-text: Display icons when the navigation menu is collapsed for large screens.
+
+  - # ====== Template Option: Collapsed by Default ===============
+    id: 15644187443292507
+    identification: 
+      name: Collapsed by Default
+      identifier: COLLAPSED_DEFAULT
+      sequence: 10
+
+    settings: 
+      advanced: false
+
+    appearance: 
+      css-classes: 
+      - js-defaultCollapsed
+
+    help: 
+      help-text: This option will load the side navigation menu in a collapsed state by default.
+
