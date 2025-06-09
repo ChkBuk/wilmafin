@@ -34,7 +34,7 @@ wwv_imp_workspace.create_flow(
 ,p_authentication_id=>wwv_flow_imp.id(14309666481069699)
 ,p_application_tab_set=>0
 ,p_public_user=>'APEX_PUBLIC_USER'
-,p_proxy_server=>nvl(wwv_flow_application_install.get_proxy,'')
+,p_proxy_server=>nvl(wwv_flow_application_install.get_proxy,'www.wilmatest.site')
 ,p_no_proxy_domains=>nvl(wwv_flow_application_install.get_no_proxy_domains,'')
 ,p_flow_version=>unistr('Wilma Financial Services \00A9 2025')
 ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
@@ -51,8 +51,8 @@ wwv_imp_workspace.create_flow(
 ,p_substitution_string_02=>'APP_GOOGLE_MAPS_API_KEY'
 ,p_substitution_value_02=>'AIzaSyC9Gxptyfk_uc98mafSaBkXDsQuQbjDy2U'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
-,p_files_version=>1358
-,p_version_scn=>39508884711561
+,p_files_version=>1370
+,p_version_scn=>39509510083300
 ,p_print_server_type=>'NATIVE'
 ,p_file_storage=>'DB'
 ,p_is_pwa=>'Y'

@@ -167,7 +167,7 @@ wwv_flow_imp_shared.create_workflow_activity(
 ,p_activity_type=>'NATIVE_WORKFLOW_WAIT'
 ,p_attribute_01=>'SQL_QUERY'
 ,p_attribute_02=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT SYSDATE + (config_value * INTERVAL ''1'' MINUTE) AS reminder_time',
+'SELECT SYSDATE + (config_value * INTERVAL ''1'' DAY) AS reminder_time',
 'FROM am_configuration ',
 'WHERE upper(config_name) = ''NO_FOLLOWUP_DAYS'';'))
 ,p_diagram=>'{"position":{"x":1150,"y":1140},"z":6}'

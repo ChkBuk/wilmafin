@@ -38,6 +38,9 @@ css:
     #main-body{
         padding-bottom: 120px;
     }
+    .hidden-item{
+        display: none;
+    }
 
 security: 
   authentication: Page Requires Authentication
@@ -448,10 +451,10 @@ regions:
       output-as: HTML
       expand-shortcuts: false
 
-- # ====== Region: Selection Container =========================
+- # ====== Region: Repayment ===================================
   id: 16747046807557402
   identification: 
-    name: Selection Container
+    name: Repayment
     type: Form
 
   source: 
@@ -462,8 +465,8 @@ regions:
     include-rowid-column: false
 
   layout: 
-    sequence: 10
-    parent-region: Frame # 19117701732806623
+    sequence: 20
+    parent-region: Calculators # 20377378432328512
     slot: SUB_REGIONS
     start-new-layout: false
     start-new-row: true
@@ -487,7 +490,7 @@ regions:
     landmark-type: Template Default
 
   advanced: 
-    static-id: calculator-region
+    static-id: repayment-calculator
     region-display-selector: false
     exclude-title-from-translation: false
 
@@ -1785,8 +1788,8 @@ regions:
     type: Static Content
 
   layout: 
-    sequence: 110
-    parent-region: Selection Container # 16747046807557402
+    sequence: 80
+    parent-region: Repayment # 16747046807557402
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -2122,7 +2125,7 @@ regions:
   id: 19117701732806623
   identification: 
     name: Frame
-    title: Home Loan Calculator
+    title: Calculators
     type: Static Content
 
   layout: 
@@ -2453,6 +2456,98 @@ regions:
       output-as: HTML
       expand-shortcuts: false
 
+- # ====== Region: Calculators =================================
+  id: 20377378432328512
+  identification: 
+    name: Calculators
+    type: Region Display Selector
+
+  layout: 
+    sequence: 10
+    parent-region: Frame # 19117701732806623
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-TabsRegion-mod--simple
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: calculator-region
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': true
+      remember-selection: By User
+
+- # ====== Region: Home Loans ==================================
+  id: 20377768554328516
+  identification: 
+    name: Home Loans
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LOAN_CALCULATOR
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: Calculators # 20377378432328512
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--showIcon
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noBorder
+    - js-headingLevel-4
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: home-calculator
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: false
+
 - # ====== Region: Dashboard ===================================
   id: 33457399116350409
   identification: 
@@ -2631,7 +2726,7 @@ page-items:
     type: Hidden
 
   settings: 
-    value-protected: true
+    value-protected: false
 
   layout: 
     sequence: 10
@@ -2642,7 +2737,7 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: CALCULATOR_ID
     data-type: NUMBER
     query-only: false
@@ -2668,12 +2763,12 @@ page-items:
     alignment: Left
 
   settings: 
-    number-of-columns: 3
+    number-of-columns: 2
     page-action-on-selection: None
 
   layout: 
     sequence: 20
-    region: Selection Container # 16747046807557402
+    region: Repayment # 16747046807557402
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -2695,7 +2790,7 @@ page-items:
 
   list-of-values: 
     type: Static Values
-    static-values: 'STATIC:Home Loan;Home Loan,Repayment;Repayment,Car Loan;Car Loan'
+    static-values: 'STATIC:Home Loan;Home Loan,Repayment;Repayment'
     display-extra-values: false
     display-null-value: false
 
@@ -2703,7 +2798,7 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: CALCULATOR_TYPE
     data-type: VARCHAR2
     query-only: false
@@ -2757,12 +2852,14 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    type: SQL Query (return single value)
-    sql-query: "select config_value from am_configuration where config_name = nvl(:P1_PROPERTY_TYPE,'LIVE_IN');"
-    used: Only when current value in session state is null
+    form-region: Repayment # 16747046807557402
+    column: INTEREST_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
 
   session-state: 
-    storage: Per Session (Persistent)
+    storage: Per Request (Memory Only)
 
   quick-picks: 
     show-quick-picks: false
@@ -2787,7 +2884,7 @@ page-items:
     page-action-on-selection: None
 
   layout: 
-    sequence: 60
+    sequence: 80
     region: InputField Container # 16818698240483224
     slot: BODY
     alignment: Left
@@ -2818,7 +2915,7 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: PROPERTY_TYPE
     data-type: VARCHAR2
     query-only: false
@@ -2843,7 +2940,7 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 80
+    sequence: 90
     region: InputField Container # 16818698240483224
     slot: BODY
 
@@ -2851,7 +2948,7 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: BUYING_REASON
     data-type: VARCHAR2
     query-only: false
@@ -2876,7 +2973,7 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 90
+    sequence: 100
     region: InputField Container # 16818698240483224
     slot: BODY
 
@@ -2884,7 +2981,7 @@ page-items:
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: REPAYMENT_TYPE
     data-type: VARCHAR2
     query-only: false
@@ -2909,15 +3006,15 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 70
-    region: Selection Container # 16747046807557402
+    sequence: 40
+    region: Repayment # 16747046807557402
     slot: BODY
 
   advanced: 
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: AUDIT_DATE
     data-type: TIMESTAMP
     query-only: false
@@ -2942,15 +3039,15 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 80
-    region: Selection Container # 16747046807557402
+    sequence: 50
+    region: Repayment # 16747046807557402
     slot: BODY
 
   advanced: 
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: AUDIT_USER
     data-type: VARCHAR2
     query-only: false
@@ -2975,15 +3072,15 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 90
-    region: Selection Container # 16747046807557402
+    sequence: 60
+    region: Repayment # 16747046807557402
     slot: BODY
 
   advanced: 
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: AUDIT_PRODUCT
     data-type: VARCHAR2
     query-only: false
@@ -3008,15 +3105,15 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 100
-    region: Selection Container # 16747046807557402
+    sequence: 70
+    region: Repayment # 16747046807557402
     slot: BODY
 
   advanced: 
     warn-on-unsaved-changes: Page Default
 
   source: 
-    form-region: Selection Container # 16747046807557402
+    form-region: Repayment # 16747046807557402
     column: AUDIT_SESSION
     data-type: VARCHAR2
     query-only: false
@@ -3061,6 +3158,7 @@ page-items:
     template: Optional - Above
     template-options: 
     - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990
     width: 30
 
   validation: 
@@ -3164,7 +3262,7 @@ page-items:
     send-on-page-submit: true
 
   layout: 
-    sequence: 100
+    sequence: 110
     region: InputField Container # 16818698240483224
     slot: BODY
     alignment: Left
@@ -3179,7 +3277,6 @@ page-items:
     template: Optional - Floating
     template-options: 
     - '#DEFAULT#'
-    format-mask: FML999G999G999G999G990D00
 
   advanced: 
     warn-on-unsaved-changes: Page Default
@@ -3219,7 +3316,7 @@ page-items:
     type: No
 
   layout: 
-    sequence: 50
+    sequence: 60
     region: InputField Container # 16818698240483224
     slot: BODY
     alignment: Left
@@ -3267,6 +3364,832 @@ page-items:
     session-state-protection: Unrestricted
     store-value-encrypted-in-session-state: true
     restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_CALCULATOR_ID_1 =======================
+  id: 20377876244328517
+  identification: 
+    name: P1_CALCULATOR_ID_1
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Home Loans # 20377768554328516
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: CALCULATOR_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_INTEREST_RATE_1 =======================
+  id: 20378061711328519
+  identification: 
+    name: P1_INTEREST_RATE_1
+    type: Number Field
+
+  label: 
+    label: Interest Rate
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 40
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: INTEREST_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_PROPERTY_TYPE_1 =======================
+  id: 20378124058328520
+  identification: 
+    name: P1_PROPERTY_TYPE_1
+    type: Radio Group
+
+  label: 
+    label: Property Type
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 50
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - radio-item
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:Live In;LIVE_IN,Invest;INVEST'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: PROPERTY_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_BUYING_REASON_1 =======================
+  id: 20378240387328521
+  identification: 
+    name: P1_BUYING_REASON_1
+    type: Text Field
+
+  label: 
+    label: Buying Reason
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: BUYING_REASON
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_REPAYMENT_TYPE_1 ======================
+  id: 20378399747328522
+  identification: 
+    name: P1_REPAYMENT_TYPE_1
+    type: Text Field
+
+  label: 
+    label: Repayment Type
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: REPAYMENT_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_AUDIT_DATE_1 ==========================
+  id: 20378406918328523
+  identification: 
+    name: P1_AUDIT_DATE_1
+    type: Date Picker
+
+  label: 
+    label: Audit Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 100
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: AUDIT_DATE
+    data-type: TIMESTAMP
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_AUDIT_USER_1 ==========================
+  id: 20378502854328524
+  identification: 
+    name: P1_AUDIT_USER_1
+    type: Text Field
+
+  label: 
+    label: Audit User
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 110
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: AUDIT_USER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_AUDIT_PRODUCT_1 =======================
+  id: 20378692634328525
+  identification: 
+    name: P1_AUDIT_PRODUCT_1
+    type: Text Field
+
+  label: 
+    label: Audit Product
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 120
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: AUDIT_PRODUCT
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_AUDIT_SESSION_1 =======================
+  id: 20378786491328526
+  identification: 
+    name: P1_AUDIT_SESSION_1
+    type: Text Field
+
+  label: 
+    label: Audit Session
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 130
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: AUDIT_SESSION
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 14309379580069697
+
+- # ====== Page Item: P1_CALCULATOR_TYPE_1 =====================
+  id: 20378818472328527
+  identification: 
+    name: P1_CALCULATOR_TYPE_1
+    type: Radio Group
+
+  label: 
+    label: Calculator Type
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 30
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hidden-item
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:Home Loan;Home Loan,Repayment;Repayment'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Home Loans # 20377768554328516
+    column: CALCULATOR_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_LOAN_AMOUNT_1 =========================
+  id: 20378933334328528
+  identification: 
+    name: P1_LOAN_AMOUNT_1
+    type: Number Field
+
+  label: 
+    label: Loan Amount
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 10
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: 153662
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_MODE_1 ================================
+  id: 20379110221328530
+  identification: 
+    name: P1_MODE_1
+    type: Select List
+
+  label: 
+    label: Mode
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 80
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:Weekly;52,Fortnightly;26,Monthy;12'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_TERM_1 ================================
+  id: 20379241033328531
+  identification: 
+    name: P1_TERM_1
+    type: Select List
+
+  label: 
+    label: Loan Term
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 90
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT LEVEL + 2 || ' years' AS display_value,
+             LEVEL + 2 AS return_value
+      FROM   DUAL
+      CONNECT BY LEVEL <= 28
+      ORDER BY LEVEL;
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_REPAYMENT_AMT_1 =======================
+  id: 20379426354328533
+  identification: 
+    name: P1_REPAYMENT_AMT_1
+    type: Display Only
+
+  label: 
+    label: Repayment Amount
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: false
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 150
+    region: Home Loans # 20377768554328516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: |
+      This amount can be changed slightly based on different conditions.
+      <p>Also, this excludes stamp duty and LMI premium</p>
 
 - # ====== Page Item: P1_ORDER_BY ==============================
   id: 33459158822350426
@@ -3514,10 +4437,10 @@ dynamic-actions:
       fire-when-event-result-is: True
       fire-on-initialization: false
 
-- # ====== Dynamic Action: InitializeRepayment =================
+- # ====== Dynamic Action: InitializeHomeLoan ==================
   id: 16821040018483248
   identification: 
-    name: InitializeRepayment
+    name: InitializeHomeLoan
 
   execution: 
     sequence: 20
@@ -3525,9 +4448,6 @@ dynamic-actions:
 
   when: 
     event: Page Load
-
-  configuration: 
-    build-option: Commented Out # 14309379580069697
 
   actions: 
   - # ====== Action: Set Value ===================================
@@ -3538,37 +4458,40 @@ dynamic-actions:
     settings: 
       set-type: PL/SQL Function Body
       pl/sql-function-body: |
-        return fin_loan_cal.calculate_repayment(
-                           p_loan_amount   => :P1_REPAYMENT_AMT,
-                           p_interest_rate => :P1_INTEREST_RATE,
-                           p_frequency     => :P1_MODE,
-                           p_term       => :P1_TERM
-                         );
+        return '$' || TO_CHAR(
+                 fin_loan_cal.calculate_repayment(
+                   p_loan_amount   => trim(regexp_replace(:P1_LOAN_AMOUNT_1, '[^0-9]', '')), 
+                   p_interest_rate => :P1_INTEREST_RATE_1,
+                   p_frequency     => :P1_MODE_1,
+                   p_term          => :P1_TERM_1
+                 ),
+                 'FM999,999,999,990'
+               );
       items-to-submit: 
-      - P1_INTEREST_RATE
-      - P1_REPAYMENT_AMT
-      - P1_MODE
-      - P1_TERM
+      - P1_LOAN_AMOUNT_1
+      - P1_INTEREST_RATE_1
+      - P1_MODE_1
+      - P1_TERM_1
       escape-special-characters: true
       suppress-change-event: false
 
     affected-elements: 
       selection-type: Item(s)
       item(s): 
-      - P1_LOAN_AMOUNT
+      - P1_REPAYMENT_AMT_1
 
     execution: 
       sequence: 10
-      event: InitializeRepayment # 16821040018483248
+      event: InitializeHomeLoan # 16821040018483248
       fire-when-event-result-is: True
       fire-on-initialization: false
       stop-execution-on-error: true
       wait-for-result: true
 
-- # ====== Dynamic Action: InitializeHomeLoan ==================
+- # ====== Dynamic Action: InitializeRepayment =================
   id: 19115509514806601
   identification: 
-    name: InitializeHomeLoan
+    name: InitializeRepayment
 
   execution: 
     sequence: 30
@@ -3600,7 +4523,6 @@ dynamic-actions:
         end;
         
       items-to-submit: 
-      - P1_REPAYMENT_AMT
       - P1_MODE
       - P1_TERM
       - P1_INTEREST_RATE
@@ -3610,7 +4532,7 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: InitializeHomeLoan # 19115509514806601
+      event: InitializeRepayment # 19115509514806601
       fire-when-event-result-is: True
       fire-on-initialization: false
       stop-execution-on-error: true
@@ -3665,7 +4587,6 @@ dynamic-actions:
         
       items-to-submit: 
       - P1_PROPERTY_TYPE
-      - P1_REPAYMENT_AMT
       - P1_MODE
       - P1_TERM
       items-to-return: 
@@ -3680,10 +4601,10 @@ dynamic-actions:
       stop-execution-on-error: true
       wait-for-result: true
 
-- # ====== Dynamic Action: re-calHomeInterest&LoanAmt ==========
+- # ====== Dynamic Action: re-calRepaymentInterest&LoanAmt =====
   id: 19116585493806611
   identification: 
-    name: re-calHomeInterest&LoanAmt
+    name: re-calRepaymentInterest&LoanAmt
 
   execution: 
     sequence: 50
@@ -3732,16 +4653,16 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: re-calHomeInterest&LoanAmt # 19116585493806611
+      event: re-calRepaymentInterest&LoanAmt # 19116585493806611
       fire-when-event-result-is: True
       fire-on-initialization: false
       stop-execution-on-error: true
       wait-for-result: true
 
-- # ====== Dynamic Action: re-calHomeInterest&LoanAmt_1 ========
+- # ====== Dynamic Action: re-calRepaymentInterest&LoanAmt_1 ===
   id: 19116771165806613
   identification: 
-    name: re-calHomeInterest&LoanAmt_1
+    name: re-calRepaymentInterest&LoanAmt_1
 
   execution: 
     sequence: 60
@@ -3749,7 +4670,7 @@ dynamic-actions:
     type: Immediate
 
   when: 
-    event: Key Release
+    event: Input
     selection-type: Item(s)
     item(s): 
     - P1_MODE
@@ -3790,16 +4711,16 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: re-calHomeInterest&LoanAmt_1 # 19116771165806613
+      event: re-calRepaymentInterest&LoanAmt_1 # 19116771165806613
       fire-when-event-result-is: True
       fire-on-initialization: false
       stop-execution-on-error: true
       wait-for-result: true
 
-- # ====== Dynamic Action: New =================================
+- # ====== Dynamic Action: Scroll to Calculator ================
   id: 19118505956806631
   identification: 
-    name: New
+    name: Scroll to Calculator
 
   execution: 
     sequence: 70
@@ -3826,9 +4747,189 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: New # 19118505956806631
+      event: Scroll to Calculator # 19118505956806631
       fire-when-event-result-is: True
       fire-on-initialization: false
+
+- # ====== Dynamic Action: re-calHomeInterest&LoanAmt ==========
+  id: 20508817223356803
+  identification: 
+    name: re-calHomeInterest&LoanAmt
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1_LOAN_AMOUNT_1
+    - P1_INTEREST_RATE_1
+    - P1_MODE_1
+    - P1_TERM_1
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 20508962182356804
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Function Body
+      pl/sql-function-body: |
+        return '$' || TO_CHAR(
+                 fin_loan_cal.calculate_repayment(
+                   p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, '[^0-9.]', ''))), 0), 
+                   p_interest_rate => :P1_INTEREST_RATE_1,
+                   p_frequency     => :P1_MODE_1,
+                   p_term          => :P1_TERM_1
+                 ),
+                 '999G999G999G999G999G999G990'
+               );
+      items-to-submit: 
+      - P1_LOAN_AMOUNT_1
+      - P1_INTEREST_RATE_1
+      - P1_MODE_1
+      - P1_TERM_1
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1_REPAYMENT_AMT_1
+
+    execution: 
+      sequence: 10
+      event: re-calHomeInterest&LoanAmt # 20508817223356803
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: re-calHomeInterest&LoanAmt_1 ========
+  id: 20509097131356805
+  identification: 
+    name: re-calHomeInterest&LoanAmt_1
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Input
+    selection-type: Item(s)
+    item(s): 
+    - P1_LOAN_AMOUNT_1
+    - P1_INTEREST_RATE_1
+    - P1_MODE_1
+    - P1_TERM_1
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 20509166339356806
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Function Body
+      pl/sql-function-body: |
+        return '$' || TO_CHAR(
+                 fin_loan_cal.calculate_repayment(
+                   p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, '[^0-9.]', ''))), 0), 
+                   p_interest_rate => :P1_INTEREST_RATE_1,
+                   p_frequency     => :P1_MODE_1,
+                   p_term          => :P1_TERM_1
+                 ),
+                 '999G999G999G999G999G999G990'
+               );
+      items-to-submit: 
+      - P1_LOAN_AMOUNT_1
+      - P1_INTEREST_RATE_1
+      - P1_MODE_1
+      - P1_TERM_1
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1_REPAYMENT_AMT_1
+
+    execution: 
+      sequence: 10
+      event: re-calHomeInterest&LoanAmt_1 # 20509097131356805
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: re-calInterestRate&HomeLoanAmt ======
+  id: 20509207214356807
+  identification: 
+    name: re-calInterestRate&HomeLoanAmt
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1_PROPERTY_TYPE_1
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 20509349297356808
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        declare
+          l_interest_rate number;
+          v_repayment_amt varchar2(100);
+        begin    
+        
+            select config_value into l_interest_rate from am_configuration where config_name = nvl(:P1_PROPERTY_TYPE_1,'LIVE_IN');
+            
+            :P1_INTEREST_RATE_1 := l_interest_rate;
+        
+            v_repayment_amt :=  '$' || to_char(
+                                 fin_loan_cal.calculate_repayment(
+                                   p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, '[^0-9.]', ''))), 0), 
+                                   p_interest_rate => :P1_INTEREST_RATE_1,
+                                   p_frequency     => :P1_MODE_1,
+                                   p_term          => :P1_TERM_1
+                                 ),
+                                 '999G999G999G999G999G999G990'
+                               );
+            :P1_REPAYMENT_AMT_1 := v_repayment_amt;
+        end;
+      items-to-submit: 
+      - P1_PROPERTY_TYPE_1
+      - P1_LOAN_AMOUNT_1
+      - P1_INTEREST_RATE_1
+      - P1_MODE_1
+      - P1_TERM_1
+      items-to-return: 
+      - P1_REPAYMENT_AMT_1
+      - P1_INTEREST_RATE_1
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: re-calInterestRate&HomeLoanAmt # 20509207214356807
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
 
 processes: 
 - # ====== Process: Invoke Workflow ============================
@@ -3995,7 +5096,7 @@ processes:
     name: Initialize form Home
     type: Form - Initialization
     execution-chain: None
-    form-region: Selection Container # 16747046807557402
+    form-region: Home Loans # 20377768554328516
 
   execution: 
     sequence: 20
@@ -4006,10 +5107,10 @@ processes:
     type: Rows returned
     sql-query: select * from loan_calculator;
 
-- # ====== Process: Set Loan Calculate PK ======================
+- # ====== Process: Set Loan Calculate PKs =====================
   id: 16818753837483225
   identification: 
-    name: Set Loan Calculate PK
+    name: Set Loan Calculate PKs
     type: Execute Code
     execution-chain: None
 
@@ -4019,12 +5120,30 @@ processes:
     pl/sql-code: |
       begin           
         :P1_CALCULATOR_ID := 2;
+        :P1_CALCULATOR_ID_1 := 4;
       end;
 
   execution: 
     sequence: 10
     point: Before Header
     run-process: Once Per Page Visit (default)
+
+- # ====== Process: Initialize form Repayment ==================
+  id: 20379038138328529
+  identification: 
+    name: Initialize form Repayment
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Repayment # 16747046807557402
+
+  execution: 
+    sequence: 30
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: select * from loan_calculator;
 
 branches: 
 - # ====== Branch: Back ========================================
