@@ -28,6 +28,9 @@ wwv_flow_imp_page.create_page(
 '    }',
 '#main-body{',
 '    padding-bottom: 120px;',
+'}',
+'.hidden-item{',
+'    display: none;',
 '}'))
 ,p_page_template_options=>'#DEFAULT#:js-pageStickyMobileHeader'
 ,p_overwrite_navigation_list=>'Y'
@@ -819,7 +822,7 @@ wwv_flow_imp_page.create_page_plug(
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(19117701732806623)
 ,p_plug_name=>'Frame'
-,p_title=>'Home Loan Calculator'
+,p_title=>'Calculators'
 ,p_parent_plug_id=>wwv_flow_imp.id(19117215478806618)
 ,p_region_css_classes=>'frame'
 ,p_icon_css_classes=>'fa-calculator'
@@ -833,13 +836,30 @@ wwv_flow_imp_page.create_page_plug(
   'output_as', 'HTML')).to_clob
 );
 wwv_flow_imp_page.create_page_plug(
- p_id=>wwv_flow_imp.id(16747046807557402)
-,p_plug_name=>'Selection Container'
+ p_id=>wwv_flow_imp.id(20377378432328512)
+,p_plug_name=>'Calculators'
 ,p_region_name=>'calculator-region'
 ,p_parent_plug_id=>wwv_flow_imp.id(19117701732806623)
+,p_region_template_options=>'#DEFAULT#:t-TabsRegion-mod--simple'
+,p_plug_template=>3223171818405608528
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'SUB_REGIONS'
+,p_location=>null
+,p_plug_source_type=>'NATIVE_DISPLAY_SELECTOR'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'display_region_icons', 'N',
+  'include_show_all', 'Y',
+  'rds_mode', 'STANDARD',
+  'remember_selection', 'USER')).to_clob
+);
+wwv_flow_imp_page.create_page_plug(
+ p_id=>wwv_flow_imp.id(16747046807557402)
+,p_plug_name=>'Repayment'
+,p_region_name=>'repayment-calculator'
+,p_parent_plug_id=>wwv_flow_imp.id(20377378432328512)
 ,p_region_template_options=>'#DEFAULT#:t-Region--showIcon:t-Region--removeHeader js-removeLandmark:t-Region--noBorder:js-headingLevel-4:t-Region--scrollBody'
 ,p_plug_template=>4072358936313175081
-,p_plug_display_sequence=>10
+,p_plug_display_sequence=>20
 ,p_plug_display_point=>'SUB_REGIONS'
 ,p_query_type=>'TABLE'
 ,p_query_table=>'LOAN_CALCULATOR'
@@ -853,11 +873,26 @@ wwv_flow_imp_page.create_page_plug(
 ,p_parent_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_region_template_options=>'#DEFAULT#:t-Region--noPadding:t-Region--removeHeader js-removeLandmark:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>4072358936313175081
-,p_plug_display_sequence=>110
+,p_plug_display_sequence=>80
 ,p_location=>null
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
   'expand_shortcuts', 'N',
   'output_as', 'HTML')).to_clob
+);
+wwv_flow_imp_page.create_page_plug(
+ p_id=>wwv_flow_imp.id(20377768554328516)
+,p_plug_name=>'Home Loans'
+,p_region_name=>'home-calculator'
+,p_parent_plug_id=>wwv_flow_imp.id(20377378432328512)
+,p_region_template_options=>'#DEFAULT#:t-Region--showIcon:t-Region--removeHeader js-removeLandmark:t-Region--noBorder:js-headingLevel-4:t-Region--scrollBody'
+,p_plug_template=>4072358936313175081
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'SUB_REGIONS'
+,p_query_type=>'TABLE'
+,p_query_table=>'LOAN_CALCULATOR'
+,p_include_rowid_column=>false
+,p_is_editable=>false
+,p_plug_source_type=>'NATIVE_FORM'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(19117408378806620)
@@ -1225,7 +1260,7 @@ wwv_flow_imp_page.create_page_item(
 ,p_is_persistent=>'N'
 ,p_protection_level=>'S'
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
-  'value_protected', 'Y')).to_clob
+  'value_protected', 'N')).to_clob
 );
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16817733707483215)
@@ -1238,28 +1273,31 @@ wwv_flow_imp_page.create_page_item(
 ,p_source=>'CALCULATOR_TYPE'
 ,p_source_type=>'REGION_SOURCE_COLUMN'
 ,p_display_as=>'NATIVE_RADIOGROUP'
-,p_lov=>'STATIC:Home Loan;Home Loan,Repayment;Repayment,Car Loan;Car Loan'
+,p_lov=>'STATIC:Home Loan;Home Loan,Repayment;Repayment'
 ,p_field_template=>3031561666792084173
 ,p_item_css_classes=>'hidden-item'
 ,p_item_template_options=>'#DEFAULT#'
 ,p_is_persistent=>'N'
 ,p_lov_display_extra=>'NO'
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
-  'number_of_columns', '3',
+  'number_of_columns', '2',
   'page_action_on_selection', 'NONE')).to_clob
 );
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16817844201483216)
 ,p_name=>'P1_INTEREST_RATE'
+,p_source_data_type=>'NUMBER'
 ,p_item_sequence=>30
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
+,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_prompt=>'Interest Rate'
-,p_source=>'select config_value from am_configuration where config_name = nvl(:P1_PROPERTY_TYPE,''LIVE_IN'');'
-,p_source_type=>'QUERY'
+,p_source=>'INTEREST_RATE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
 ,p_display_as=>'NATIVE_NUMBER_FIELD'
 ,p_cSize=>30
 ,p_field_template=>3031561666792084173
 ,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
   'number_alignment', 'left',
   'virtual_keyboard', 'decimal')).to_clob
@@ -1268,7 +1306,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16817944063483217)
 ,p_name=>'P1_PROPERTY_TYPE'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>60
+,p_item_sequence=>80
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_prompt=>'Property Type'
@@ -1289,7 +1327,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818039335483218)
 ,p_name=>'P1_BUYING_REASON'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>80
+,p_item_sequence=>90
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'BUYING_REASON'
@@ -1303,7 +1341,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818148114483219)
 ,p_name=>'P1_REPAYMENT_TYPE'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>90
+,p_item_sequence=>100
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'REPAYMENT_TYPE'
@@ -1317,7 +1355,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818238741483220)
 ,p_name=>'P1_AUDIT_DATE'
 ,p_source_data_type=>'TIMESTAMP'
-,p_item_sequence=>70
+,p_item_sequence=>40
 ,p_item_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'AUDIT_DATE'
@@ -1331,7 +1369,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818361831483221)
 ,p_name=>'P1_AUDIT_USER'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>80
+,p_item_sequence=>50
 ,p_item_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'AUDIT_USER'
@@ -1345,7 +1383,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818423528483222)
 ,p_name=>'P1_AUDIT_PRODUCT'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>90
+,p_item_sequence=>60
 ,p_item_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'AUDIT_PRODUCT'
@@ -1359,7 +1397,7 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16818501462483223)
 ,p_name=>'P1_AUDIT_SESSION'
 ,p_source_data_type=>'VARCHAR2'
-,p_item_sequence=>100
+,p_item_sequence=>70
 ,p_item_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_item_source_plug_id=>wwv_flow_imp.id(16747046807557402)
 ,p_source=>'AUDIT_SESSION'
@@ -1376,6 +1414,7 @@ wwv_flow_imp_page.create_page_item(
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_item_default=>'$410'
 ,p_prompt=>'Repayment Amt'
+,p_format_mask=>'FML999G999G999G999G990'
 ,p_display_as=>'NATIVE_NUMBER_FIELD'
 ,p_cSize=>30
 ,p_field_template=>3031561666792084173
@@ -1401,10 +1440,9 @@ wwv_flow_imp_page.create_page_item(
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16820932219483247)
 ,p_name=>'P1_LOAN_AMOUNT'
-,p_item_sequence=>100
+,p_item_sequence=>110
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_prompt=>'Loan Amount'
-,p_format_mask=>'FML999G999G999G999G990D00'
 ,p_display_as=>'NATIVE_DISPLAY_ONLY'
 ,p_field_template=>1609121967514267634
 ,p_item_template_options=>'#DEFAULT#'
@@ -1420,7 +1458,7 @@ wwv_flow_imp_page.create_page_item(
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(16821252065483250)
 ,p_name=>'P1_TERM'
-,p_item_sequence=>50
+,p_item_sequence=>60
 ,p_item_plug_id=>wwv_flow_imp.id(16818698240483224)
 ,p_prompt=>'Loan Term'
 ,p_display_as=>'NATIVE_SELECT_LIST'
@@ -1436,6 +1474,290 @@ wwv_flow_imp_page.create_page_item(
 ,p_lov_display_extra=>'NO'
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
   'page_action_on_selection', 'NONE')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20377876244328517)
+,p_name=>'P1_CALCULATOR_ID_1'
+,p_source_data_type=>'NUMBER'
+,p_is_primary_key=>true
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_source=>'CALCULATOR_ID'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_is_persistent=>'N'
+,p_protection_level=>'S'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'value_protected', 'N')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378061711328519)
+,p_name=>'P1_INTEREST_RATE_1'
+,p_source_data_type=>'NUMBER'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Interest Rate'
+,p_source=>'INTEREST_RATE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_NUMBER_FIELD'
+,p_cSize=>30
+,p_field_template=>3031561666792084173
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'number_alignment', 'left',
+  'virtual_keyboard', 'decimal')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378124058328520)
+,p_name=>'P1_PROPERTY_TYPE_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Property Type'
+,p_source=>'PROPERTY_TYPE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_RADIOGROUP'
+,p_lov=>'STATIC:Live In;LIVE_IN,Invest;INVEST'
+,p_field_template=>3031561666792084173
+,p_item_css_classes=>'radio-item'
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_lov_display_extra=>'NO'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'number_of_columns', '2',
+  'page_action_on_selection', 'NONE')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378240387328521)
+,p_name=>'P1_BUYING_REASON_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Buying Reason'
+,p_source=>'BUYING_REASON'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_cMaxlength=>255
+,p_field_template=>3031561666792084173
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'disabled', 'N',
+  'submit_when_enter_pressed', 'N',
+  'subtype', 'TEXT',
+  'trim_spaces', 'BOTH')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378399747328522)
+,p_name=>'P1_REPAYMENT_TYPE_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>70
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Repayment Type'
+,p_source=>'REPAYMENT_TYPE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_cMaxlength=>50
+,p_field_template=>3031561666792084173
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'disabled', 'N',
+  'submit_when_enter_pressed', 'N',
+  'subtype', 'TEXT',
+  'trim_spaces', 'BOTH')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378406918328523)
+,p_name=>'P1_AUDIT_DATE_1'
+,p_source_data_type=>'TIMESTAMP'
+,p_item_sequence=>100
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Audit Date'
+,p_source=>'AUDIT_DATE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_DATE_PICKER_APEX'
+,p_cSize=>30
+,p_field_template=>1609121967514267634
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'display_as', 'POPUP',
+  'max_date', 'NONE',
+  'min_date', 'NONE',
+  'multiple_months', 'N',
+  'show_time', 'N',
+  'use_defaults', 'Y')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378502854328524)
+,p_name=>'P1_AUDIT_USER_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>110
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Audit User'
+,p_source=>'AUDIT_USER'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_cMaxlength=>100
+,p_field_template=>1609121967514267634
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'disabled', 'N',
+  'submit_when_enter_pressed', 'N',
+  'subtype', 'TEXT',
+  'trim_spaces', 'BOTH')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378692634328525)
+,p_name=>'P1_AUDIT_PRODUCT_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>120
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Audit Product'
+,p_source=>'AUDIT_PRODUCT'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_cMaxlength=>100
+,p_field_template=>1609121967514267634
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'disabled', 'N',
+  'submit_when_enter_pressed', 'N',
+  'subtype', 'TEXT',
+  'trim_spaces', 'BOTH')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378786491328526)
+,p_name=>'P1_AUDIT_SESSION_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>130
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Audit Session'
+,p_source=>'AUDIT_SESSION'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_cMaxlength=>100
+,p_field_template=>1609121967514267634
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'disabled', 'N',
+  'submit_when_enter_pressed', 'N',
+  'subtype', 'TEXT',
+  'trim_spaces', 'BOTH')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378818472328527)
+,p_name=>'P1_CALCULATOR_TYPE_1'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_source_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Calculator Type'
+,p_source=>'CALCULATOR_TYPE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_RADIOGROUP'
+,p_lov=>'STATIC:Home Loan;Home Loan,Repayment;Repayment'
+,p_field_template=>3031561666792084173
+,p_item_css_classes=>'hidden-item'
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_lov_display_extra=>'NO'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'number_of_columns', '2',
+  'page_action_on_selection', 'NONE')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20378933334328528)
+,p_name=>'P1_LOAN_AMOUNT_1'
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_item_default=>'153662'
+,p_prompt=>'Loan Amount'
+,p_format_mask=>'FML999G999G999G999G990'
+,p_display_as=>'NATIVE_NUMBER_FIELD'
+,p_cSize=>30
+,p_field_template=>3031561666792084173
+,p_item_template_options=>'#DEFAULT#'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'number_alignment', 'left',
+  'virtual_keyboard', 'decimal')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20379110221328530)
+,p_name=>'P1_MODE_1'
+,p_item_sequence=>80
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Mode'
+,p_display_as=>'NATIVE_SELECT_LIST'
+,p_lov=>'STATIC:Weekly;52,Fortnightly;26,Monthy;12'
+,p_cHeight=>1
+,p_field_template=>3031561666792084173
+,p_lov_display_extra=>'NO'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'page_action_on_selection', 'NONE')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20379241033328531)
+,p_name=>'P1_TERM_1'
+,p_item_sequence=>90
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Loan Term'
+,p_display_as=>'NATIVE_SELECT_LIST'
+,p_lov=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT LEVEL + 2 || '' years'' AS display_value,',
+'       LEVEL + 2 AS return_value',
+'FROM   DUAL',
+'CONNECT BY LEVEL <= 28',
+'ORDER BY LEVEL;'))
+,p_cHeight=>1
+,p_field_template=>3031561666792084173
+,p_item_template_options=>'#DEFAULT#'
+,p_lov_display_extra=>'NO'
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'page_action_on_selection', 'NONE')).to_clob
+);
+wwv_flow_imp_page.create_page_item(
+ p_id=>wwv_flow_imp.id(20379426354328533)
+,p_name=>'P1_REPAYMENT_AMT_1'
+,p_item_sequence=>150
+,p_item_plug_id=>wwv_flow_imp.id(20377768554328516)
+,p_prompt=>'Repayment Amount'
+,p_display_as=>'NATIVE_DISPLAY_ONLY'
+,p_field_template=>1609121967514267634
+,p_item_template_options=>'#DEFAULT#'
+,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'This amount can be changed slightly based on different conditions.',
+'<p>Also, this excludes stamp duty and LMI premium</p>'))
+,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
+  'based_on', 'VALUE',
+  'format', 'PLAIN',
+  'send_on_page_submit', 'N',
+  'show_line_breaks', 'N')).to_clob
 );
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(33459158822350426)
@@ -1480,11 +1802,10 @@ wwv_flow_imp_page.create_page_da_action(
 );
 wwv_flow_imp_page.create_page_da_event(
  p_id=>wwv_flow_imp.id(16821040018483248)
-,p_name=>'InitializeRepayment'
+,p_name=>'InitializeHomeLoan'
 ,p_event_sequence=>20
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'ready'
-,p_required_patch=>wwv_flow_imp.id(14309379580069697)
 );
 wwv_flow_imp_page.create_page_da_action(
  p_id=>wwv_flow_imp.id(16821195769483249)
@@ -1494,23 +1815,26 @@ wwv_flow_imp_page.create_page_da_action(
 ,p_execute_on_page_init=>'N'
 ,p_action=>'NATIVE_SET_VALUE'
 ,p_affected_elements_type=>'ITEM'
-,p_affected_elements=>'P1_LOAN_AMOUNT'
+,p_affected_elements=>'P1_REPAYMENT_AMT_1'
 ,p_attribute_01=>'FUNCTION_BODY'
 ,p_attribute_06=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'return fin_loan_cal.calculate_repayment(',
-'                   p_loan_amount   => :P1_REPAYMENT_AMT,',
-'                   p_interest_rate => :P1_INTEREST_RATE,',
-'                   p_frequency     => :P1_MODE,',
-'                   p_term       => :P1_TERM',
-'                 );'))
-,p_attribute_07=>'P1_INTEREST_RATE,P1_REPAYMENT_AMT,P1_MODE,P1_TERM'
+'return ''$'' || TO_CHAR(',
+'         fin_loan_cal.calculate_repayment(',
+'           p_loan_amount   => trim(regexp_replace(:P1_LOAN_AMOUNT_1, ''[^0-9]'', '''')), ',
+'           p_interest_rate => :P1_INTEREST_RATE_1,',
+'           p_frequency     => :P1_MODE_1,',
+'           p_term          => :P1_TERM_1',
+'         ),',
+'         ''FM999,999,999,990''',
+'       );'))
+,p_attribute_07=>'P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
 ,p_attribute_08=>'Y'
 ,p_attribute_09=>'N'
 ,p_wait_for_result=>'Y'
 );
 wwv_flow_imp_page.create_page_da_event(
  p_id=>wwv_flow_imp.id(19115509514806601)
-,p_name=>'InitializeHomeLoan'
+,p_name=>'InitializeRepayment'
 ,p_event_sequence=>30
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'ready'
@@ -1536,7 +1860,7 @@ wwv_flow_imp_page.create_page_da_action(
 ' :P1_LOAN_AMOUNT := v_loan_amt;',
 'end;',
 ''))
-,p_attribute_02=>'P1_REPAYMENT_AMT,P1_MODE,P1_TERM,P1_INTEREST_RATE'
+,p_attribute_02=>'P1_MODE,P1_TERM,P1_INTEREST_RATE'
 ,p_attribute_03=>'P1_LOAN_AMOUNT'
 ,p_attribute_04=>'N'
 ,p_attribute_05=>'PLSQL'
@@ -1582,7 +1906,7 @@ wwv_flow_imp_page.create_page_da_action(
 ':P1_LOAN_AMOUNT := v_loan_amt;',
 'end;',
 ''))
-,p_attribute_02=>'P1_PROPERTY_TYPE,P1_REPAYMENT_AMT,P1_MODE,P1_TERM'
+,p_attribute_02=>'P1_PROPERTY_TYPE,P1_MODE,P1_TERM'
 ,p_attribute_03=>'P1_INTEREST_RATE'
 ,p_attribute_04=>'N'
 ,p_attribute_05=>'PLSQL'
@@ -1590,7 +1914,7 @@ wwv_flow_imp_page.create_page_da_action(
 );
 wwv_flow_imp_page.create_page_da_event(
  p_id=>wwv_flow_imp.id(19116585493806611)
-,p_name=>'re-calHomeInterest&LoanAmt'
+,p_name=>'re-calRepaymentInterest&LoanAmt'
 ,p_event_sequence=>50
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_MODE,P1_TERM,P1_INTEREST_RATE,P1_REPAYMENT_AMT'
@@ -1627,13 +1951,13 @@ wwv_flow_imp_page.create_page_da_action(
 );
 wwv_flow_imp_page.create_page_da_event(
  p_id=>wwv_flow_imp.id(19116771165806613)
-,p_name=>'re-calHomeInterest&LoanAmt_1'
+,p_name=>'re-calRepaymentInterest&LoanAmt_1'
 ,p_event_sequence=>60
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_MODE,P1_TERM,P1_INTEREST_RATE,P1_REPAYMENT_AMT'
 ,p_bind_type=>'bind'
 ,p_execution_type=>'IMMEDIATE'
-,p_bind_event_type=>'keyup'
+,p_bind_event_type=>'input'
 );
 wwv_flow_imp_page.create_page_da_action(
  p_id=>wwv_flow_imp.id(19116896588806614)
@@ -1664,7 +1988,7 @@ wwv_flow_imp_page.create_page_da_action(
 );
 wwv_flow_imp_page.create_page_da_event(
  p_id=>wwv_flow_imp.id(19118505956806631)
-,p_name=>'New'
+,p_name=>'Scroll to Calculator'
 ,p_event_sequence=>70
 ,p_triggering_element_type=>'BUTTON'
 ,p_triggering_button_id=>wwv_flow_imp.id(19118424897806630)
@@ -1684,6 +2008,120 @@ wwv_flow_imp_page.create_page_da_action(
 '$(''html, body'').animate({',
 '    scrollTop: $(''#calculator-region'').offset().top - 190 // Adjust offset as needed',
 '}, 500); // 500ms animation duration'))
+);
+wwv_flow_imp_page.create_page_da_event(
+ p_id=>wwv_flow_imp.id(20508817223356803)
+,p_name=>'re-calHomeInterest&LoanAmt'
+,p_event_sequence=>80
+,p_triggering_element_type=>'ITEM'
+,p_triggering_element=>'P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
+,p_bind_type=>'bind'
+,p_execution_type=>'IMMEDIATE'
+,p_bind_event_type=>'change'
+);
+wwv_flow_imp_page.create_page_da_action(
+ p_id=>wwv_flow_imp.id(20508962182356804)
+,p_event_id=>wwv_flow_imp.id(20508817223356803)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_REPAYMENT_AMT_1'
+,p_attribute_01=>'FUNCTION_BODY'
+,p_attribute_06=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'return ''$'' || TO_CHAR(',
+'         fin_loan_cal.calculate_repayment(',
+'           p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, ''[^0-9.]'', ''''))), 0), ',
+'           p_interest_rate => :P1_INTEREST_RATE_1,',
+'           p_frequency     => :P1_MODE_1,',
+'           p_term          => :P1_TERM_1',
+'         ),',
+'         ''999G999G999G999G999G999G990''',
+'       );'))
+,p_attribute_07=>'P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
+,p_attribute_08=>'Y'
+,p_attribute_09=>'N'
+,p_wait_for_result=>'Y'
+);
+wwv_flow_imp_page.create_page_da_event(
+ p_id=>wwv_flow_imp.id(20509097131356805)
+,p_name=>'re-calHomeInterest&LoanAmt_1'
+,p_event_sequence=>90
+,p_triggering_element_type=>'ITEM'
+,p_triggering_element=>'P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
+,p_bind_type=>'bind'
+,p_execution_type=>'IMMEDIATE'
+,p_bind_event_type=>'input'
+);
+wwv_flow_imp_page.create_page_da_action(
+ p_id=>wwv_flow_imp.id(20509166339356806)
+,p_event_id=>wwv_flow_imp.id(20509097131356805)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_REPAYMENT_AMT_1'
+,p_attribute_01=>'FUNCTION_BODY'
+,p_attribute_06=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'return ''$'' || TO_CHAR(',
+'         fin_loan_cal.calculate_repayment(',
+'           p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, ''[^0-9.]'', ''''))), 0), ',
+'           p_interest_rate => :P1_INTEREST_RATE_1,',
+'           p_frequency     => :P1_MODE_1,',
+'           p_term          => :P1_TERM_1',
+'         ),',
+'         ''999G999G999G999G999G999G990''',
+'       );'))
+,p_attribute_07=>'P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
+,p_attribute_08=>'Y'
+,p_attribute_09=>'N'
+,p_wait_for_result=>'Y'
+);
+wwv_flow_imp_page.create_page_da_event(
+ p_id=>wwv_flow_imp.id(20509207214356807)
+,p_name=>'re-calInterestRate&HomeLoanAmt'
+,p_event_sequence=>100
+,p_triggering_element_type=>'ITEM'
+,p_triggering_element=>'P1_PROPERTY_TYPE_1'
+,p_bind_type=>'bind'
+,p_execution_type=>'IMMEDIATE'
+,p_bind_event_type=>'change'
+);
+wwv_flow_imp_page.create_page_da_action(
+ p_id=>wwv_flow_imp.id(20509349297356808)
+,p_event_id=>wwv_flow_imp.id(20509207214356807)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_EXECUTE_PLSQL_CODE'
+,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'declare',
+'  l_interest_rate number;',
+'  v_repayment_amt varchar2(100);',
+'begin    ',
+'',
+'    select config_value into l_interest_rate from am_configuration where config_name = nvl(:P1_PROPERTY_TYPE_1,''LIVE_IN'');',
+'    ',
+'    :P1_INTEREST_RATE_1 := l_interest_rate;',
+'',
+'    v_repayment_amt :=  ''$'' || to_char(',
+'                         fin_loan_cal.calculate_repayment(',
+'                           p_loan_amount   => round(to_number(trim(regexp_replace(:P1_LOAN_AMOUNT_1, ''[^0-9.]'', ''''))), 0), ',
+'                           p_interest_rate => :P1_INTEREST_RATE_1,',
+'                           p_frequency     => :P1_MODE_1,',
+'                           p_term          => :P1_TERM_1',
+'                         ),',
+'                         ''999G999G999G999G999G999G990''',
+'                       );',
+'    :P1_REPAYMENT_AMT_1 := v_repayment_amt;',
+'end;'))
+,p_attribute_02=>'P1_PROPERTY_TYPE_1,P1_LOAN_AMOUNT_1,P1_INTEREST_RATE_1,P1_MODE_1,P1_TERM_1'
+,p_attribute_03=>'P1_REPAYMENT_AMT_1,P1_INTEREST_RATE_1'
+,p_attribute_04=>'N'
+,p_attribute_05=>'PLSQL'
+,p_wait_for_result=>'Y'
 );
 wwv_flow_imp_page.create_page_process(
  p_id=>wwv_flow_imp.id(15043942364162319)
@@ -1782,10 +2220,11 @@ wwv_flow_imp_page.create_page_process(
 ,p_process_sequence=>10
 ,p_process_point=>'BEFORE_HEADER'
 ,p_process_type=>'NATIVE_PLSQL'
-,p_process_name=>'Set Loan Calculate PK'
+,p_process_name=>'Set Loan Calculate PKs'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'begin           ',
 '  :P1_CALCULATOR_ID := 2;',
+'  :P1_CALCULATOR_ID_1 := 4;',
 'end;'))
 ,p_process_clob_language=>'PLSQL'
 ,p_internal_uid=>16818753837483225
@@ -1794,12 +2233,23 @@ wwv_flow_imp_page.create_page_process(
  p_id=>wwv_flow_imp.id(16817517453483213)
 ,p_process_sequence=>20
 ,p_process_point=>'BEFORE_HEADER'
-,p_region_id=>wwv_flow_imp.id(16747046807557402)
+,p_region_id=>wwv_flow_imp.id(20377768554328516)
 ,p_process_type=>'NATIVE_FORM_INIT'
 ,p_process_name=>'Initialize form Home'
 ,p_process_when=>'select * from loan_calculator;'
 ,p_process_when_type=>'EXISTS'
 ,p_internal_uid=>16817517453483213
+);
+wwv_flow_imp_page.create_page_process(
+ p_id=>wwv_flow_imp.id(20379038138328529)
+,p_process_sequence=>30
+,p_process_point=>'BEFORE_HEADER'
+,p_region_id=>wwv_flow_imp.id(16747046807557402)
+,p_process_type=>'NATIVE_FORM_INIT'
+,p_process_name=>'Initialize form Repayment'
+,p_process_when=>'select * from loan_calculator;'
+,p_process_when_type=>'EXISTS'
+,p_internal_uid=>20379038138328529
 );
 wwv_flow_imp.component_end;
 end;

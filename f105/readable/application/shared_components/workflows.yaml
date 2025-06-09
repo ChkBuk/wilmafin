@@ -277,7 +277,7 @@
       settings: 
         timeout-type: SQL Query
         sql-query: |
-          SELECT SYSDATE + (config_value * INTERVAL '1' MINUTE) AS reminder_time
+          SELECT SYSDATE + (config_value * INTERVAL '1' DAY) AS reminder_time
           FROM am_configuration 
           WHERE upper(config_name) = 'NO_FOLLOWUP_DAYS';
 

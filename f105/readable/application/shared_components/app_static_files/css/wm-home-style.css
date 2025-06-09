@@ -15,7 +15,7 @@
     border:  none!important;
     --a-button-state-shadow:  none!important;
 }
-#P1_LOAN_AMOUNT_DISPLAY {
+#P1_LOAN_AMOUNT_DISPLAY , #P1_REPAYMENT_AMT_1 {
  padding-top: 32px;
  font-size: xx-large;
  font-weight: 600;
@@ -41,7 +41,7 @@ apex-item-checkbox input + label, .apex-item-radio input + label, .apex-item-sin
   position: absolute;
 }
 
-#calculator-region {
+#home-calculator, #repayment-calculator {
   position: unset;
   z-index: 1;
   /* padding: 12px 30px; */
@@ -257,7 +257,7 @@ font-size: 1.3rem;
     font-size: .85rem;
     line-height: 2.5rem;
     }
-    #P1_LOAN_AMOUNT_DISPLAY {
+    #P1_LOAN_AMOUNT_DISPLAY ,#P1_REPAYMENT_AMT_1{
       font-size: 1.2rem;
     }
     .a-CardView-body h1 {

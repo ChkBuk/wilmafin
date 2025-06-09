@@ -227,7 +227,7 @@ page-items:
     value-protected: false
 
   layout: 
-    sequence: 340
+    sequence: 350
     region: New Customer # 29385113239605780
     slot: BODY
 
@@ -328,7 +328,7 @@ page-items:
     virtual-keyboard: Decimal
 
   layout: 
-    sequence: 210
+    sequence: 230
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -388,7 +388,7 @@ page-items:
     type: No
 
   layout: 
-    sequence: 220
+    sequence: 240
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -680,6 +680,115 @@ page-items:
     form-region: New Customer # 29385113239605780
     column: AUDIT_CREATED_DATE
     data-type: TIMESTAMP WITH LOCAL TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_IS_PARTNER_JOIN =======================
+  id: 20376221788328501
+  identification: 
+    name: P3_IS_PARTNER_JOIN
+    type: Switch
+
+  label: 
+    label: Will the partner be joined?
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 170
+    region: New Customer # 29385113239605780
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: New Customer # 29385113239605780
+    column: IS_PARTNER_JOIN
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_PTN_INCOME_AMOUNT =====================
+  id: 20376379056328502
+  identification: 
+    name: P3_PTN_INCOME_AMOUNT
+    type: Number Field
+
+  label: 
+    label: Partner's Income Amount
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 180
+    region: New Customer # 29385113239605780
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    format-mask: FML999G999G999G999G990D00
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: New Customer # 29385113239605780
+    column: PTN_INCOME_AMOUNT
+    data-type: NUMBER
     query-only: false
     primary-key: false
 
@@ -1604,13 +1713,11 @@ page-items:
     alignment: Left
 
   settings: 
-    minimum-value: 0
-    maximum-value: 99
     number-alignment: Start
     virtual-keyboard: Decimal
 
   layout: 
-    sequence: 170
+    sequence: 190
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -1626,11 +1733,10 @@ page-items:
     template-options: 
     - '#DEFAULT#'
     - t-Form-fieldContainer--stretchInputs
-    width: 32
+    width: 30
 
   validation: 
     value-required: false
-    maximum-length: 255
 
   advanced: 
     warn-on-unsaved-changes: Page Default
@@ -1668,7 +1774,7 @@ page-items:
     virtual-keyboard: Decimal
 
   layout: 
-    sequence: 190
+    sequence: 210
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -1729,7 +1835,7 @@ page-items:
     type: No
 
   layout: 
-    sequence: 180
+    sequence: 200
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -1792,7 +1898,7 @@ page-items:
     virtual-keyboard: Decimal
 
   layout: 
-    sequence: 200
+    sequence: 220
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -1853,7 +1959,7 @@ page-items:
     trim-spaces: Leading and Trailing
 
   layout: 
-    sequence: 230
+    sequence: 250
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -1911,7 +2017,7 @@ page-items:
     use-defaults: true
 
   layout: 
-    sequence: 240
+    sequence: 260
     region: New Customer # 29385113239605780
     slot: BODY
     alignment: Left
@@ -2385,7 +2491,9 @@ dynamic-actions:
           });
         };
         
-        // 2. Load script with callback
+        
+        
+        //2. Load script with callback
         (function loadGoogleAPI() {
           const existingScript = document.getElementById('googleMaps');
           if (!existingScript) {
@@ -2398,6 +2506,36 @@ dynamic-actions:
           }
         })();
         
+        
+        // (function loadGoogleAPI() {
+        //   apex.server.process(
+        //     'LOAD_GCP_API_KEY',
+        //     {},
+        //     {
+        //       success: function(pData) {
+        //         console.log('API Key Response:', pData); // Debug output
+                
+        //         if (pData.key) {
+        //           if (!document.getElementById('googleMaps')) {
+        //             const script = document.createElement('script');
+        //             script.src = "https://maps.googleapis.com/maps/api/js?key=${pData.key}&libraries=places&callback=initAutocomplete";
+        //             script.id = 'googleMaps';
+        //             script.async = true;
+        //             script.defer = true;
+        //             document.body.appendChild(script);
+        //             console.log('Google Maps script loaded successfully');
+        //           }
+        //         } else {
+        //           console.error('API key missing in response', pData);
+        //         }
+        //       },
+        //       error: function(jqXHR, textStatus, errorThrown) {
+        //         console.error('AJAX Error:', textStatus, errorThrown);
+        //       },
+        //       dataType: 'json' // Explicitly expect JSON
+        //     }
+        //   );
+        // })();
 
     execution: 
       sequence: 10
@@ -2580,6 +2718,120 @@ dynamic-actions:
 
     configuration: 
       build-option: Commented Out # 14309379580069697
+
+- # ====== Dynamic Action: show hide partner info ==============
+  id: 20376485054328503
+  identification: 
+    name: show hide partner info
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P3_IS_PARTNER
+
+  client-side-condition: 
+    type: Item = Value
+    item: P3_IS_PARTNER
+    value: Y
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 20376573047328504
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P3_IS_PARTNER_JOIN
+
+    execution: 
+      sequence: 10
+      event: show hide partner info # 20376485054328503
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 20376608880328505
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P3_IS_PARTNER_JOIN
+      - P3_PTN_INCOME_AMOUNT
+
+    execution: 
+      sequence: 10
+      event: show hide partner info # 20376485054328503
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: show hide partner income amt ========
+  id: 20377050179328509
+  identification: 
+    name: show hide partner income amt
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P3_IS_PARTNER_JOIN
+
+  client-side-condition: 
+    type: Item = Value
+    item: P3_IS_PARTNER_JOIN
+    value: Y
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 20377111629328510
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P3_PTN_INCOME_AMOUNT
+
+    execution: 
+      sequence: 10
+      event: show hide partner income amt # 20377050179328509
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 20377210183328511
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P3_PTN_INCOME_AMOUNT
+
+    execution: 
+      sequence: 10
+      event: show hide partner income amt # 20377050179328509
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P3_IS_PARTNER_JOIN
+      value: N
 
 validations: 
 - # ====== Validation: phone no validation =====================

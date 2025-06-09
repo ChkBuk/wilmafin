@@ -160,19 +160,19 @@
     mime-type: image/png
     file-character-set: Unicode UTF-8
 
-- # ====== Static Application File: css/wm-home-style.min.css ==
-  id: 19563608221049818
+- # ====== Static Application File: css/wm-style.min.css =======
+  id: 19612245322671860
   identification: 
-    file-name: css/wm-home-style.min.css
+    file-name: css/wm-style.min.css
 
   attributes: 
     mime-type: text/css
     file-character-set: Unicode UTF-8
 
-- # ====== Static Application File: css/wm-style.min.css =======
-  id: 19612245322671860
+- # ====== Static Application File: css/wm-home-style.min.css ==
+  id: 20486916365115293
   identification: 
-    file-name: css/wm-style.min.css
+    file-name: css/wm-home-style.min.css
 
   attributes: 
     mime-type: text/css

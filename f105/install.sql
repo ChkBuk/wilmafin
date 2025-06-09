@@ -29,11 +29,12 @@ prompt --install
 @@application/shared_components/files/javascript_scrolling_effects_min_js.sql
 @@application/shared_components/files/css_wm_home_style_css.sql
 @@application/shared_components/files/pwa_shortcut_icon_10_png.sql
-@@application/shared_components/files/css_wm_home_style_min_css.sql
 @@application/shared_components/files/css_wm_style_min_css.sql
+@@application/shared_components/files/css_wm_home_style_min_css.sql
 @@application/plugin_settings.sql
 @@application/shared_components/security/authorizations/administration_rights.sql
 @@application/shared_components/navigation/navigation_bar.sql
+@@application/shared_components/logic/application_processes/load_gcp_api_key.sql
 @@application/shared_components/logic/application_settings.sql
 @@application/shared_components/navigation/tabs/standard.sql
 @@application/shared_components/navigation/tabs/parent.sql

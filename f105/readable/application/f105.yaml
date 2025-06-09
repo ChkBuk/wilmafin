@@ -28,6 +28,7 @@ advanced:
   compatibility-mode: 24.2
   accessible-read-only-items: true
   pass-ecid: Y
+  proxy-server: www.wilmatest.site
   copyright-banner: Wilma Financial Services © 2025. All Rights Reserved Terms of Use and Privacy Policy
 
 authentication: 
@@ -131,7 +132,7 @@ attributes:
   auto-dismiss-success-messages: true
 
 subscription: 
-  version-number: 39508884711561
+  version-number: 39509510083300
 
 substitutions: 
 - # ====== Substitution: APP_NAME ==============================
