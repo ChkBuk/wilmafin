@@ -17,16 +17,7 @@ jobs:
         unzip sqlcl-latest.zip
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
         
-    - name: Verify Secrets Exist
-      id: check-secrets
-      run: |
-        if [ -z "${{ secrets.ORACLE_USER }}" ]; then echo "ORACLE_USER is empty" && exit 1; fi
-        if [ -z "${{ secrets.ORACLE_PASSWORD }}" ]; then echo "ORACLE_PASSWORD is empty" && exit 1; fi
-        if [ -z "${{ secrets.ORACLE_HOST }}" ]; then echo "ORACLE_HOST is empty" && exit 1; fi
-        if [ -z "${{ secrets.ORACLE_PORT }}" ]; then echo "ORACLE_PORT is empty" && exit 1; fi
-        if [ -z "${{ secrets.ORACLE_SERVICE }}" ]; then echo "ORACLE_SERVICE is empty" && exit 1; fi
-        echo "All required secrets are present"
-        
+
     - name: Test Database Connection (Basic)
       env:
         ORACLE_USER: "ADMIN"
