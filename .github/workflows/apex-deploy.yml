@@ -15,12 +15,20 @@ jobs:
         sudo apt-get install -y wget unzip default-jre
         wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
         unzip sqlcl-latest.zip
-        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
+        echo "::add-path::$(pwd)/sqlcl/bin"  # Updated path addition method
+        
+    - name: Verify SQLcl installation
+      run: |
+        echo "SQLcl version:"
+        $(pwd)/sqlcl/bin/sql -v
         
     - name: Deploy APEX App
       env:
         ORACLE_USER: ${{ secrets.ORACLE_USER }}
         ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
-        ORACLE_CONN_STRING: ${{ secrets.ORACLE_HOST }}:${{ secrets.ORACLE_PORT }}/${{ secrets.ORACLE_SERVICE }}
+        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
       run: |
-        sqlcl $ORACLE_USER/$ORACLE_PASSWORD@$ORACLE_CONN_STRING @f105/install.sql
+        echo "Attempting to connect to: $ORACLE_USER@$ORACLE_HOST:$ORACLE_PORT/$ORACLE_SERVICE"
+        $(pwd)/sqlcl/bin/sql $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" @f105/install.sql
