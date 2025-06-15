@@ -23,4 +23,4 @@ jobs:
         ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
         ORACLE_CONN_STRING: ${{ secrets.ORACLE_HOST }}:${{ secrets.ORACLE_PORT }}/${{ secrets.ORACLE_SERVICE }}
       run: |
-        sqlcl $ORACLE_USER/$ORACLE_PASSWORD@$ORACLE_CONN_STRING @apex-app/install_script.sql
+        sqlcl $ORACLE_USER/$ORACLE_PASSWORD@$ORACLE_CONN_STRING @f105/install.sql
