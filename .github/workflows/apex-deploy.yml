@@ -15,12 +15,65 @@ jobs:
         sudo apt-get install -y wget unzip default-jre
         wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
         unzip sqlcl-latest.zip
-        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH  # Updated path addition method
+        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
         
-    - name: Verify SQLcl installation
+    - name: Verify Secrets Exist
       run: |
-        echo "SQLcl path: $(which sql || echo 'Not found')"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+        echo "ORACLE_USER: ${{ secrets.ORACLE_USER != '' && 'SET' || 'MISSING' }}"
+        echo "ORACLE_HOST: ${{ secrets.ORACLE_HOST != '' && 'SET' || 'MISSING' }}"
+        echo "ORACLE_PORT: ${{ secrets.ORACLE_PORT != '' && 'SET' || 'MISSING' }}"
+        echo "ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE != '' && 'SET' || 'MISSING' }}"
+        
+    - name: Test Database Connection
+      env:
+        ORACLE_USER: ${{ secrets.ORACLE_USER }}
+        ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
+        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+      run: |
+        echo "Testing connection to Oracle database..."
+        CONNECTION_STRING="(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))"
+        
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"$CONNECTION_STRING" <<EOF
+        set feedback on
+        set echo on
+        set serveroutput on size unlimited
+        whenever sqlerror exit sql.sqlcode
+        
+        DECLARE
+          v_count NUMBER;
+          v_apex_version VARCHAR2(100);
+        BEGIN
+          -- Check database accessibility
+          SELECT COUNT(*) INTO v_count FROM dual;
+          DBMS_OUTPUT.PUT_LINE('Database connection successful. Dual table count: ' || v_count);
+          
+          -- Check APEX accessibility
+          BEGIN
+            v_apex_version := APEX_UTIL.GET_APEX_VERSION;
+            DBMS_OUTPUT.PUT_LINE('APEX version: ' || v_apex_version);
+          EXCEPTION
+            WHEN OTHERS THEN
+              DBMS_OUTPUT.PUT_LINE('APEX access error: ' || SQLERRM);
+              RAISE;
+          END;
+          
+          -- Check workspace access if workspace is specified
+          ${{ secrets.APEX_WORKSPACE != '' && 'BEGIN
+            SELECT COUNT(*) INTO v_count 
+            FROM apex_workspaces 
+            WHERE workspace = ''' || secrets.APEX_WORKSPACE || ''';
+            DBMS_OUTPUT.PUT_LINE(''Workspace ' || secrets.APEX_WORKSPACE || ' found'');
+          EXCEPTION
+            WHEN OTHERS THEN
+              DBMS_OUTPUT.PUT_LINE(''Workspace access error: '' || SQLERRM);
+              RAISE;
+          END;' || '-- Workspace not specified' }}
+        END;
+        /
+        exit;
+        EOF
         
     - name: Verify install script exists
       run: |
@@ -37,14 +90,48 @@ jobs:
         ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
         ORACLE_PORT: "1522"
         ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
+        APEX_WORKSPACE: "DEV"
+        APEX_APP_ID: 105
       run: |
-        echo "Attempting connection to Oracle database..."
-        echo "Using host: $ORACLE_HOST"
-        echo "Using port: $ORACLE_PORT"
-        echo "Using service: $ORACLE_SERVICE"
+        echo "Starting deployment to Oracle APEX..."
+        CONNECTION_STRING="(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))"
         
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"$CONNECTION_STRING" <<EOF
+        set feedback on
+        set echo on
+        set serveroutput on size unlimited
+        whenever sqlerror exit sql.sqlcode
+        
+        -- Set workspace if specified
+        ${{ secrets.APEX_WORKSPACE != '' && 'BEGIN
+          apex_application_install.set_workspace(''' || secrets.APEX_WORKSPACE || ''');
+          DBMS_OUTPUT.PUT_LINE(''Workspace set to: ' || secrets.APEX_WORKSPACE || ''');
+        END;
+        /' || '-- No workspace specified' }}
+        
+        -- Set application ID if specified
+        ${{ secrets.APEX_APP_ID != '' && 'BEGIN
+          apex_application_install.set_application_id(' || secrets.APEX_APP_ID || ');
+          DBMS_OUTPUT.PUT_LINE(''Application ID set to: ' || secrets.APEX_APP_ID || ''');
+        END;
+        /' || '-- No application ID specified' }}
+        
+        -- Run installation script
         @f105/install.sql
+        
+        -- Verify installation
+        BEGIN
+          DBMS_OUTPUT.PUT_LINE('Verifying application installation...');
+          FOR app IN (SELECT application_id, application_name 
+                      FROM apex_applications 
+                      WHERE alias = 'YOUR_APP_ALIAS'  -- Change to your app alias
+                      ${{ secrets.APEX_WORKSPACE != '' && 'AND workspace = ''' || secrets.APEX_WORKSPACE || '''' || '' }}
+                      ORDER BY application_id DESC)
+          LOOP
+            DBMS_OUTPUT.PUT_LINE('Found application: ' || app.application_id || ' - ' || app.application_name);
+          END LOOP;
+        END;
+        /
+        
         exit;
         EOF
