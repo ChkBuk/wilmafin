@@ -15,12 +15,20 @@ jobs:
         sudo apt-get install -y wget unzip default-jre
         wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
         unzip sqlcl-latest.zip
-        echo "::add-path::$(pwd)/sqlcl/bin"  # Updated path addition method
+        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH  # Updated path addition method
         
     - name: Verify SQLcl installation
       run: |
-        echo "SQLcl version:"
-        $(pwd)/sqlcl/bin/sql -v
+        echo "SQLcl path: $(which sql || echo 'Not found')"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+        
+    - name: Verify install script exists
+      run: |
+        ls -la f105/install.sql
+        if [ ! -f "f105/install.sql" ]; then
+          echo "Error: install.sql not found at f105/install.sql"
+          exit 1
+        fi
         
     - name: Deploy APEX App
       env:
@@ -30,5 +38,13 @@ jobs:
         ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
         ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
       run: |
-        echo "Attempting to connect to: $ORACLE_USER@$ORACLE_HOST:$ORACLE_PORT/$ORACLE_SERVICE"
-        $(pwd)/sqlcl/bin/sql $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" @f105/install.sql
+        echo "Attempting connection to Oracle database..."
+        echo "Using host: $ORACLE_HOST"
+        echo "Using port: $ORACLE_PORT"
+        echo "Using service: $ORACLE_SERVICE"
+        
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        @f105/install.sql
+        exit;
+        EOF
