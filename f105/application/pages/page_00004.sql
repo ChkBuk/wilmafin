@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2024.11.30'
 ,p_release=>'24.2.5'
-,p_default_workspace_id=>7595803988746305
+,p_default_workspace_id=>9537998525254393
 ,p_default_application_id=>105
-,p_default_id_offset=>0
-,p_default_owner=>'WILMAFIN'
+,p_default_id_offset=>9654090527537426
+,p_default_owner=>'XEWMDEV'
 );
 wwv_flow_imp_page.create_page(
  p_id=>4
@@ -25,7 +25,7 @@ wwv_flow_imp_page.create_page(
 ,p_page_component_map=>'23'
 );
 wwv_flow_imp_page.create_page_plug(
- p_id=>wwv_flow_imp.id(16284553672233240)
+ p_id=>wwv_flow_imp.id(25938644199770666)
 ,p_plug_name=>'Dashboard'
 ,p_region_template_options=>'#DEFAULT#:t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc'
 ,p_component_template_options=>'#DEFAULT#'
@@ -43,8 +43,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_show_total_row_count=>false
 );
 wwv_flow_imp_page.create_card(
- p_id=>wwv_flow_imp.id(16284656208233241)
-,p_region_id=>wwv_flow_imp.id(16284553672233240)
+ p_id=>wwv_flow_imp.id(25938746735770667)
+,p_region_id=>wwv_flow_imp.id(25938644199770666)
 ,p_layout_type=>'GRID'
 ,p_title_adv_formatting=>true
 ,p_title_html_expr=>'Total customer'
@@ -55,7 +55,7 @@ wwv_flow_imp_page.create_card(
 ,p_media_adv_formatting=>false
 );
 wwv_flow_imp_page.create_page_plug(
- p_id=>wwv_flow_imp.id(16284733606233242)
+ p_id=>wwv_flow_imp.id(25938824133770668)
 ,p_plug_name=>'Dashboard'
 ,p_region_template_options=>'#DEFAULT#:t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc'
 ,p_component_template_options=>'#DEFAULT#'
@@ -74,8 +74,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_show_total_row_count=>false
 );
 wwv_flow_imp_page.create_card(
- p_id=>wwv_flow_imp.id(16284854823233243)
-,p_region_id=>wwv_flow_imp.id(16284733606233242)
+ p_id=>wwv_flow_imp.id(25938945350770669)
+,p_region_id=>wwv_flow_imp.id(25938824133770668)
 ,p_layout_type=>'GRID'
 ,p_title_adv_formatting=>true
 ,p_title_html_expr=>'Total customer'
@@ -86,19 +86,19 @@ wwv_flow_imp_page.create_card(
 ,p_media_adv_formatting=>false
 );
 wwv_flow_imp_page.create_page_plug(
- p_id=>wwv_flow_imp.id(16719110110843476)
+ p_id=>wwv_flow_imp.id(26373200638380902)
 ,p_plug_name=>'Breadcrumb'
 ,p_region_template_options=>'#DEFAULT#:t-BreadcrumbRegion--useBreadcrumbTitle'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>2531463326621247859
 ,p_plug_display_sequence=>10
 ,p_plug_display_point=>'REGION_POSITION_01'
-,p_menu_id=>wwv_flow_imp.id(14309936853069701)
+,p_menu_id=>wwv_flow_imp.id(23964027380607127)
 ,p_plug_source_type=>'NATIVE_BREADCRUMB'
 ,p_menu_template_id=>4072363345357175094
 );
 wwv_flow_imp_page.create_page_plug(
- p_id=>wwv_flow_imp.id(16719885148843480)
+ p_id=>wwv_flow_imp.id(26373975676380906)
 ,p_plug_name=>'Dashboard'
 ,p_region_template_options=>'#DEFAULT#:t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc'
 ,p_plug_template=>2072724515482255512
@@ -115,8 +115,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_pagination_display_position=>'BOTTOM_RIGHT'
 );
 wwv_flow_imp_page.create_card(
- p_id=>wwv_flow_imp.id(16720333724843481)
-,p_region_id=>wwv_flow_imp.id(16719885148843480)
+ p_id=>wwv_flow_imp.id(26374424252380907)
+,p_region_id=>wwv_flow_imp.id(26373975676380906)
 ,p_layout_type=>'GRID'
 ,p_title_adv_formatting=>true
 ,p_title_html_expr=>'Total customer'
@@ -127,11 +127,11 @@ wwv_flow_imp_page.create_card(
 ,p_media_adv_formatting=>false
 );
 wwv_flow_imp_page.create_page_item(
- p_id=>wwv_flow_imp.id(16720815352843485)
+ p_id=>wwv_flow_imp.id(26374905880380911)
 ,p_name=>'P4_ORDER_BY'
 ,p_is_required=>true
 ,p_item_sequence=>10
-,p_item_plug_id=>wwv_flow_imp.id(16719885148843480)
+,p_item_plug_id=>wwv_flow_imp.id(26373975676380906)
 ,p_item_display_point=>'ORDER_BY_ITEM'
 ,p_item_default=>'TOTAL_CUSTOMERS'
 ,p_prompt=>'Order By'
@@ -142,7 +142,7 @@ wwv_flow_imp_page.create_page_item(
 ,p_item_template_options=>'#DEFAULT#'
 ,p_warn_on_unsaved_changes=>'I'
 ,p_lov_display_extra=>'NO'
-,p_required_patch=>wwv_flow_imp.id(14309379580069697)
+,p_required_patch=>wwv_flow_imp.id(23963470107607123)
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
   'page_action_on_selection', 'NONE')).to_clob
 );

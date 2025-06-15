@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2024.11.30'
 ,p_release=>'24.2.5'
-,p_default_workspace_id=>7595803988746305
+,p_default_workspace_id=>9537998525254393
 ,p_default_application_id=>105
-,p_default_id_offset=>0
-,p_default_owner=>'WILMAFIN'
+,p_default_id_offset=>9654090527537426
+,p_default_owner=>'XEWMDEV'
 );
 wwv_flow_imp.g_varchar2_table := wwv_flow_imp.empty_varchar2_table;
 wwv_flow_imp.g_varchar2_table(1) := '2428646F63756D656E74292E6F6E2822636C69636B222C222E742D5265706F72742D706167696E6174696F6E2061222C2866756E6374696F6E2874297B742E70726576656E7444656661756C7428293B766172206F3D242874686973292E617474722822';
@@ -18,7 +18,7 @@ wwv_flow_imp.g_varchar2_table(3) := '77696E646F772E6C6F636174696F6E2E687265663D6
 wwv_flow_imp.g_varchar2_table(4) := '742E70726576656E7444656661756C7428293B766172206F3D242874686973292E6174747228226872656622293B24286F292E6765742830292E7363726F6C6C496E746F56696577287B6265686176696F723A22736D6F6F7468222C626C6F636B3A2273';
 wwv_flow_imp.g_varchar2_table(5) := '74617274227D297D29293B';
 wwv_flow_imp_shared.create_app_static_file(
- p_id=>wwv_flow_imp.id(15889949998464506)
+ p_id=>wwv_flow_imp.id(25544040526001932)
 ,p_file_name=>'javascript/scrolling-effects.min.js'
 ,p_mime_type=>'text/javascript'
 ,p_file_charset=>'utf-8'

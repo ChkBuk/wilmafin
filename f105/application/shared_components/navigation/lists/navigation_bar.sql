@@ -6,19 +6,19 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2024.11.30'
 ,p_release=>'24.2.5'
-,p_default_workspace_id=>7595803988746305
+,p_default_workspace_id=>9537998525254393
 ,p_default_application_id=>105
-,p_default_id_offset=>0
-,p_default_owner=>'WILMAFIN'
+,p_default_id_offset=>9654090527537426
+,p_default_owner=>'XEWMDEV'
 );
 wwv_flow_imp_shared.create_list(
- p_id=>wwv_flow_imp.id(14311628860069724)
+ p_id=>wwv_flow_imp.id(23965719387607150)
 ,p_name=>'Navigation Bar'
 ,p_list_status=>'PUBLIC'
 ,p_version_scn=>39508413434702
 );
 wwv_flow_imp_shared.create_list_item(
- p_id=>wwv_flow_imp.id(14339944125954271)
+ p_id=>wwv_flow_imp.id(23994034653491697)
 ,p_list_item_display_sequence=>1
 ,p_list_item_link_text=>'Install App'
 ,p_list_item_link_target=>'#action$a-pwa-install'

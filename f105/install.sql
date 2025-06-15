@@ -1,4 +1,11 @@
 prompt --install
+BEGIN
+  APEX_APPLICATION_INSTALL.SET_APPLICATION_ID(105);
+  APEX_APPLICATION_INSTALL.SET_APPLICATION_NAME('WilmaFin');
+  APEX_APPLICATION_INSTALL.SET_SCHEMA('ADMIN'); -- Replace with your actual schema
+  APEX_APPLICATION_INSTALL.SET_WORKSPACE('DEV'); -- Replace with your actual workspace
+END;
+/
 @@application/set_environment.sql
 @@application/delete_application.sql
 @@application/create_application.sql
@@ -39,7 +46,6 @@ prompt --install
 @@application/shared_components/navigation/tabs/standard.sql
 @@application/shared_components/navigation/tabs/parent.sql
 @@application/pages/page_groups.sql
-@@application/comments.sql
 @@application/shared_components/navigation/breadcrumbs/breadcrumb.sql
 @@application/shared_components/navigation/breadcrumbentry.sql
 @@application/shared_components/user_interface/templates/list/wm_side_navigation_menu.sql
@@ -50,7 +56,6 @@ prompt --install
 @@application/shared_components/user_interface/template_opt_groups.sql
 @@application/shared_components/user_interface/template_options.sql
 @@application/shared_components/globalization/language.sql
-@@application/shared_components/globalization/translations.sql
 @@application/shared_components/logic/build_options.sql
 @@application/shared_components/globalization/messages.sql
 @@application/shared_components/globalization/dyntranslations.sql

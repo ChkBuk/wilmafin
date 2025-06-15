@@ -6,13 +6,13 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2024.11.30'
 ,p_release=>'24.2.5'
-,p_default_workspace_id=>7595803988746305
+,p_default_workspace_id=>9537998525254393
 ,p_default_application_id=>105
-,p_default_id_offset=>0
-,p_default_owner=>'WILMAFIN'
+,p_default_id_offset=>9654090527537426
+,p_default_owner=>'XEWMDEV'
 );
 wwv_flow_imp_shared.create_app_setting(
- p_id=>wwv_flow_imp.id(14822182677232151)
+ p_id=>wwv_flow_imp.id(24476273204769577)
 ,p_name=>'GOOGLE_MAPS_API_KEY'
 ,p_value=>'AIzaSyC9Gxptyfk_uc98mafSaBkXDsQuQbjDy2U'
 ,p_is_required=>'N'
