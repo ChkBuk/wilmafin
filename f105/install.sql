@@ -2,7 +2,7 @@ prompt --install
 BEGIN
   APEX_APPLICATION_INSTALL.SET_APPLICATION_ID(105);
   APEX_APPLICATION_INSTALL.SET_APPLICATION_NAME('WilmaFin');
-  APEX_APPLICATION_INSTALL.SET_SCHEMA('ADMIN'); -- Replace with your actual schema
+  APEX_APPLICATION_INSTALL.SET_SCHEMA('XEWMDEV'); -- Replace with your actual schema
   APEX_APPLICATION_INSTALL.SET_WORKSPACE('DEV'); -- Replace with your actual workspace
 END;
 /
