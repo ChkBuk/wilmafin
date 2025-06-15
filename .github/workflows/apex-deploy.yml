@@ -32,11 +32,11 @@ jobs:
         
     - name: Deploy APEX App
       env:
-        ORACLE_USER: ${{ secrets.ORACLE_USER }}
-        ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
-        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+        ORACLE_USER: "ADMIN"
+        ORACLE_PASSWORD: "MahindaCollege2000!"
+        ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
+        ORACLE_PORT: "1522"
+        ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
       run: |
         echo "Attempting connection to Oracle database..."
         echo "Using host: $ORACLE_HOST"
