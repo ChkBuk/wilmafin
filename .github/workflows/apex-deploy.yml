@@ -20,11 +20,11 @@ jobs:
 
     - name: Test Database Connection (Basic)
       env:
-        ORACLE_USER: "ADMIN"
-        ORACLE_PASSWORD: "MahindaCollege2000!"
-        ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
-        ORACLE_PORT: "1522"
-        ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
+        ORACLE_USER: ADMIN
+        ORACLE_PASSWORD: MahindaCollege2000!
+        ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
+        ORACLE_PORT: 1522
+        ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
       run: |
         echo "Testing basic connection to Oracle database..."
         echo "Using host: $ORACLE_HOST"
@@ -73,11 +73,11 @@ jobs:
         
     - name: Deploy APEX App
       env:
-        ORACLE_USER: "ADMIN"
-        ORACLE_PASSWORD: "MahindaCollege2000!"
-        ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
-        ORACLE_PORT: "1522"
-        ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
+        ORACLE_USER: ADMIN
+        ORACLE_PASSWORD: MahindaCollege2000!
+        ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
+        ORACLE_PORT: 1522
+        ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
       run: |
         echo "Starting deployment..."
         ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" @f105/install.sql
