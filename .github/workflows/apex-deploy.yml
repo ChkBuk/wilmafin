@@ -47,7 +47,7 @@ jobs:
         ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
       run: |
         echo "Testing APEX access..."
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        "${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
         set feedback on
         set echo on
         set serveroutput on size unlimited
@@ -67,7 +67,7 @@ jobs:
         END;
         /
         exit;
-        EOF
+        EOF"
         
     - name: Deploy APEX App
       env:
