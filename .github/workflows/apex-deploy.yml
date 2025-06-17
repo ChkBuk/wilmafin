@@ -25,18 +25,13 @@ jobs:
         ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
         ORACLE_PORT: 1522
         ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
-      run: |
-        echo "Testing basic connection to Oracle database..."
-        echo "Using host: $ORACLE_HOST"
-        echo "Using port: $ORACLE_PORT"
-        echo "Using service: $ORACLE_SERVICE"
+      run:
         
         # Simple connection test with timeout
         if ! timeout 10 ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<< "exit"; then
           echo "Failed to establish basic database connection"
           exit 1
         fi
-        echo "Basic connection test successful"
         
     - name: Test APEX Access
       env:
