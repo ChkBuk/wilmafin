@@ -1,78 +1,49 @@
-name: APEX Deployment
+name: Query SYSDATE from Oracle Autonomous DB
 
 on: [push]
 
 jobs:
-  deploy:
+  query-sysdate:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install SQLcl
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget unzip default-jre
-        wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-        unzip sqlcl-latest.zip
-        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
-        
+      - name: Checkout Public Repo
+        uses: actions/checkout@v4
 
-    - name: Test Database Connection (Basic)
-      env:
-        ORACLE_USER: ADMIN
-        ORACLE_PASSWORD: MahindaCollege2000!
-        ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
-        ORACLE_PORT: 1522
-        ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
-      run:
-        
-        # Simple connection test with timeout
-        if ! timeout 10 ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<< "exit"; then
-          echo "Failed to establish basic database connection"
-          exit 1
-        fi
-        
-    - name: Test APEX Access
-      env:
-        ORACLE_USER: ADMIN
-        ORACLE_PASSWORD: MahindaCollege2000!
-        ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
-        ORACLE_PORT: 1522
-        ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
-      run: |
-        echo "Testing APEX access..."
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-        set feedback on
-        set echo on
-        set serveroutput on size unlimited format wrapped
-        whenever sqlerror exit sql.sqlcode
-        
-        DECLARE
-          v_apex_version VARCHAR2(100);
-        BEGIN
-          BEGIN
-            v_apex_version := APEX_UTIL.GET_APEX_VERSION;
-            DBMS_OUTPUT.PUT_LINE('APEX version: ' || v_apex_version);
-          EXCEPTION
-            WHEN OTHERS THEN
-              DBMS_OUTPUT.PUT_LINE('APEX access error: ' || SQLERRM);
-              RAISE;
-          END;
-        END;
-        /
-        
-        print lines
-        exit;
-        EOF
-        
-    - name: Deploy APEX App
-      env:
-        ORACLE_USER: ADMIN
-        ORACLE_PASSWORD: MahindaCollege2000!
-        ORACLE_HOST: adb.ap-melbourne-1.oraclecloud.com
-        ORACLE_PORT: 1522
-        ORACLE_SERVICE: ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com
-      run: |
-        echo "Starting deployment..."
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" @f105/install.sql
+      - name: Checkout private wallet repo
+        uses: actions/checkout@v4
+        with:
+          repository: ChkBuk/secretsrepo
+          path: oci_wallet
+          token: ${{ secrets.WALLET_REPO_PAT }}
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install SQLcl
+        run: |
+          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+          unzip sqlcl.zip -d sqlcl
+
+      - name: Configure Wallet
+        run: |
+          mkdir -p $HOME/wallet
+          cp -r oci_wallet/* $HOME/wallet/
+          sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
+        shell: bash
+
+      - name: Set Env Variables
+        run: |
+          echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
+          echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
+
+      - name: Query SYSDATE
+        run: |
+          echo "SELECT SYSDATE FROM DUAL;" > query.sql
+          sql ${DB_USER}/${DB_PASSWORD}@${DB_ALIAS} @query.sql
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_ALIAS: ga8e55f0b539d22_sldevdb_high
