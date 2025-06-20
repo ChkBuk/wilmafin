@@ -5,6 +5,8 @@ permissions:
   contents: read 
 jobs:
   query-sysdate:
+    environment: Development
+  query-sysdate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Public Repo
