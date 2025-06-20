@@ -1,7 +1,8 @@
 name: Query SYSDATE from Oracle Autonomous DB
 
 on: [push]
-
+permissions:
+  contents: read 
 jobs:
   query-sysdate:
     runs-on: ubuntu-latest
@@ -14,7 +15,6 @@ jobs:
         with:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
-          token: ${{ secrets.WALLET_REPO_PAT }}
 
       - name: Setup Java 17
         uses: actions/setup-java@v3
