@@ -33,12 +33,19 @@ jobs:
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
           unzip sqlcl.zip -d sqlcl
 
+      - name: Debug wallet folder contents
+        run: |
+          echo "Listing contents of oci_wallet and HOME/wallet:"
+          ls -R oci_wallet || true
+          ls -R $HOME/wallet || true
+
       - name: Configure Wallet
         run: |
           mkdir -p $HOME/wallet
           cp -r oci_wallet/* $HOME/wallet/
+          ls $HOME/wallet
           sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
-        shell: bash
+
 
       - name: Set Env Variables
         run: |
