@@ -13,7 +13,7 @@ jobs:
         
       - name: Print variables
         run: |
-          echo ${{ var.WALLET_REPO_PAT }}
+          echo ${{ vars.WALLET_REPO_PAT }}
           
       - name: Checkout private wallet repo
         uses: actions/checkout@v4
