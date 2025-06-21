@@ -1,79 +1,50 @@
-name: Query SYSDATE from Oracle Autonomous DB
+name: APEX Deployment
 
 on: [push]
-permissions:
-  contents: read 
+
 jobs:
-  query-sysdate:
-    environment: Development
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Public Repo
-        uses: actions/checkout@v4
-        
-      - name: Print variables
-        run: |
-          echo ${{ vars.WALLET_REPO_PAT }}
-          
-      - name: Checkout private wallet repo
-        uses: actions/checkout@v4
-        with:
-          repository: ChkBuk/secretsrepo
-          path: oci_wallet
-          token: "${{ vars.WALLET_REPO_PAT }}"
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Install SQLcl
-        run: |
-          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip sqlcl.zip -d sqlcl
-
-      - name: Debug wallet folder contents
-        run: |
-          echo "Listing contents of oci_wallet and HOME/wallet:"
-          ls -R oci_wallet || true
-          ls -R $HOME/wallet || true
-
-      - name: Configure Wallet
-        run: |
-          echo "Copying wallet files..."
-          mkdir -p "$HOME/wallet"
-          cp -r oci_wallet/oci_wallet/* "$HOME/wallet/"
-          echo "List $HOME/wallet content:"
-          ls -R "$HOME/wallet"
-          echo "Editing sqlnet.ora..."
-          sed -i 's|?/network/admin|\$TNS_ADMIN|g' "$HOME/wallet/sqlnet.ora"
-        shell: bash
-
-
-      - name: Set env vars
-        run: |
-          echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
     
-      - name: Set up SQLcl + Java
-        uses: gvenzl/setup-oracle-sqlcl@v1
-        with:
-          version: latest
-          setup-java-version: 17
-
-      
-      - name: Query SYSDATE (OCI mode)
-        run: |
-          echo "Testing SYSDATE query via OCI..."
-          ${GITHUB_WORKSPACE}/sqlcl/bin/sql -oci "${DB_USER}/${DB_PASSWORD}@${DB_ALIAS}" <<EOF
-          set feedback on
-          SELECT SYSDATE FROM DUAL;
-          exit;
-          EOF
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_ALIAS: ${{ secrets.DB_ALIAS }}
-
-
-
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install SQLcl
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip default-jre
+        wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+        unzip sqlcl-latest.zip
+        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH  # Updated path addition method
+        
+    - name: Verify SQLcl installation
+      run: |
+        echo "SQLcl path: $(which sql || echo 'Not found')"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+        
+    - name: Verify install script exists
+      run: |
+        ls -la f105/install.sql
+        if [ ! -f "f105/install.sql" ]; then
+          echo "Error: install.sql not found at f105/install.sql"
+          exit 1
+        fi
+        
+    - name: Deploy APEX App
+      env:
+        ORACLE_USER: ${{ secrets.ORACLE_USER }}
+        ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
+        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+      run: |
+        echo "Attempting connection to Oracle database..."
+        echo "Using host: $ORACLE_HOST"
+        echo "Using port: $ORACLE_PORT"
+        echo "Using service: $ORACLE_SERVICE"
+        
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        @f105/install.sql
+        exit;
+        EOF
