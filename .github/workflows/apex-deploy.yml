@@ -10,7 +10,11 @@ jobs:
     steps:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
-
+        
+      - name: Print variables
+        run: |
+          echo "PAT is ${{ var.WALLET_REPO_PAT }}"
+          
       - name: Checkout private wallet repo
         uses: actions/checkout@v4
         with:
