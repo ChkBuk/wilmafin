@@ -30,32 +30,23 @@ jobs:
           exit 1
         fi
         
-    - name: Deploy APEX App
-      env:
-        ORACLE_USER: ${{ secrets.ORACLE_USER }}
-        ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
-        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+    - name: Run SQL Query
       run: |
-        echo "Attempting connection to Oracle database..."
-        echo "Using host: $ORACLE_HOST"
-        echo "Using port: $ORACLE_PORT"
-        echo "Using service: $ORACLE_SERVICE"
-        
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@... <<EOF > sql_output.log
+        # Run SQL and save output to file
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
         set feedback on
-        SELECT 'TESTING123' FROM DUAL;
+        set sqlformat ansiconsole
+        SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM DUAL;
         exit;
         EOF
-        
-        # Then display the file
-        echo "---- FULL SQL OUTPUT ----"
+    
+        # Display output in logs (optional)
+        echo "---- SQL OUTPUT ----"
         cat sql_output.log
         echo "---- END OUTPUT ----"
-
-    - name: Upload Log
-      uses: actions/upload-artifact@v3
+    
+    - name: Upload SQL Output Log
+      uses: actions/upload-artifact@v4
       with:
-        name: sql-logs
+        name: sql-output-log
         path: sql_output.log
