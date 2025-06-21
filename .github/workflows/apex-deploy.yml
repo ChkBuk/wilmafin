@@ -44,7 +44,7 @@ jobs:
         echo "Using service: $ORACLE_SERVICE"
         
         ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-        WHENEVER SQLERROR EXIT SQL.SQLCODE
-        @f105/install.sql
+        set feedback on
+        SELECT SYSDATE FROM DUAL;
         exit;
         EOF
