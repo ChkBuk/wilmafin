@@ -50,11 +50,18 @@ jobs:
           sed -i 's|?/network/admin|\$TNS_ADMIN|g' "$HOME/wallet/sqlnet.ora"
         shell: bash
 
-      - name: Set Env Variables
+
+      - name: Set env vars
         run: |
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
-          echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
+    
+      - name: Set up SQLcl + Java
+        uses: gvenzl/setup-oracle-sqlcl@v1
+        with:
+          version: latest
+          setup-java-version: 17
 
+      
       - name: Query SYSDATE (OCI mode)
         run: |
           echo "Testing SYSDATE query via OCI..."
