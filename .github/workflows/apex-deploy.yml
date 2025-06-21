@@ -45,6 +45,10 @@ jobs:
         
         ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
         set feedback on
-        SELECT SYSDATE FROM DUAL;
+        set sqlformat ansiconsole  /* Forces output display */
+        set serveroutput on       /* Ensures output isn't suppressed */
+        
+        SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS current_date FROM DUAL;
+        
         exit;
         EOF
