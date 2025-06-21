@@ -58,7 +58,7 @@ jobs:
       - name: Query SYSDATE
         run: |
           echo "SELECT SYSDATE FROM DUAL;" > query.sql
-          sql 'admin/MahindaCollege2000!@(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))' @query.sql
+          sql "${DB_USER}/${DB_PASSWORD}@${DB_ALIAS}" @query.sql
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
