@@ -41,11 +41,14 @@ jobs:
 
       - name: Configure Wallet
         run: |
-          mkdir -p $HOME/wallet
-          cp -r oci_wallet/* $HOME/wallet/
-          ls $HOME/wallet
-          sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
-
+          echo "Copying wallet files..."
+          mkdir -p "$HOME/wallet"
+          cp -r oci_wallet/oci_wallet/* "$HOME/wallet/"
+          echo "List $HOME/wallet content:"
+          ls -R "$HOME/wallet"
+          echo "Editing sqlnet.ora..."
+          sed -i 's|?/network/admin|\$TNS_ADMIN|g' "$HOME/wallet/sqlnet.ora"
+        shell: bash
 
       - name: Set Env Variables
         run: |
