@@ -61,6 +61,6 @@ jobs:
           sql ${DB_USER}/${DB_PASSWORD}@${DB_ALIAS} @query.sql
 
         env:
-          DB_USER: ADMIN
-          DB_PASSWORD: MahindaCollege2000!
-          DB_ALIAS: "//adb.ap-melbourne-1.oraclecloud.com:1522/ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
+          DB_USER: "ADMIN"
+          DB_PASSWORD: "MahindaCollege2000!"
+          DB_ALIAS: "1522/ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
