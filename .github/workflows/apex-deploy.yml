@@ -50,4 +50,12 @@ jobs:
         EOF
         
         # Then display the file
+        echo "---- FULL SQL OUTPUT ----"
         cat sql_output.log
+        echo "---- END OUTPUT ----"
+
+    - name: Upload Log
+      uses: actions/upload-artifact@v3
+      with:
+        name: sql-logs
+        path: sql_output.log
