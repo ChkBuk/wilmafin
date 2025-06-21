@@ -20,7 +20,7 @@ jobs:
         with:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
-          token: ${{ var.WALLET_REPO_PAT }}
+          token: "${{ vars.WALLET_REPO_PAT }}"
 
       - name: Setup Java 17
         uses: actions/setup-java@v3
