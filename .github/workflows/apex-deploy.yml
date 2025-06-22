@@ -30,22 +30,35 @@ jobs:
           exit 1
         fi
     
-    - name: Configure Oracle Wallet
+    - name: Configure Wallet
       run: |
         echo "===== Setting Up Wallet ====="
+        
+        # 1. Verify files exist in repo
+        echo "Repository contents:"
+        ls -la oci_wallet/ || echo "No oci_wallet directory found"
+        
+        # 2. Create target directory
         WALLET_DIR="$HOME/oracle/wallet"
         mkdir -p $WALLET_DIR
-        cp -r oci_wallet/* $WALLET_DIR/
         
-        # Update sqlnet.ora with correct path
-        sed -i "s|?/network/admin|$WALLET_DIR|g" $WALLET_DIR/sqlnet.ora
-        
-        # Set environment variables
-        echo "TNS_ADMIN=$WALLET_DIR" >> $GITHUB_ENV
-        echo "LD_LIBRARY_PATH=$WALLET_DIR" >> $GITHUB_ENV
-        
-        echo "Wallet contents:"
-        ls -la $WALLET_DIR
+        # 3. Copy with error handling
+        if [ -d "oci_wallet" ]; then
+          echo "Copying wallet files..."
+          cp oci_wallet/* $WALLET_DIR/
+          echo "Copied files:"
+          ls -la $WALLET_DIR
+          
+          # 4. Set permissions
+          chmod 600 $WALLET_DIR/*
+          
+          # 5. Configure environment
+          echo "TNS_ADMIN=$WALLET_DIR" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$WALLET_DIR" >> $GITHUB_ENV
+        else
+          echo "Error: oci_wallet directory missing"
+          exit 1
+        fi
     
     - name: Test Connection
       env:
