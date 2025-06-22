@@ -30,28 +30,43 @@ jobs:
           exit 1
         fi
         
-    - name: Run SQL Query with Proper Output
+    - name: Run SQL with Guaranteed Output
       run: |
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
+        /* CRITICAL SETTINGS */
         set feedback on
-        set echo on
+        set heading on
         set sqlformat ansiconsole
-        set serveroutput on size unlimited
-        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        set serveroutput on size unlimited format wrapped
         
-        -- Query with forced formatting
-        SELECT 'CURRENT_DATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS output FROM DUAL;
+        /* SIMPLE TEST QUERY */
+        SELECT 
+            'SYSDATE:' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS date_output,
+            'DATABASE:' || (SELECT name FROM v\$database) AS db_info
+        FROM dual;
         
-        -- Ensure output is flushed
-        COMMIT;
         EXIT;
         EOF
-    
-        # Verify log content
-        echo "---- SQL OUTPUT LOG CONTENTS ----"
+        
+        echo "---- RAW OUTPUT ----"
         cat sql_output.log
-        echo "---- END LOG ----"
-    
+
+    - name: Full Diagnostic
+      run: |
+        echo "---- SQLCL VERSION ----"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+        
+        echo "---- ENV VARIABLES ----"
+        printenv | grep ORACLE
+        
+        echo "---- CONNECTION TEST ----"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        set feedback on
+        set timing on
+        SELECT 1+1 AS test_result FROM dual;
+        EXIT;
+        EOF
+        
     - name: Upload Log
       uses: actions/upload-artifact@v4
       with:
