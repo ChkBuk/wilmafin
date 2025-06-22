@@ -30,13 +30,7 @@ jobs:
           exit 1
         fi
         
-    - name: Deploy APEX App
-      env:
-        ORACLE_USER: ${{ secrets.DB_USER }}
-        ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+
     
     - name: Run Installation Script
       run: |
