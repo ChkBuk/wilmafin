@@ -62,7 +62,7 @@ jobs:
         SQL_EOF
         
         # Execute with forced output
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l admin/MahindaCollege2000!@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))" @run_install.sql 2>&1 | tee install_output.log
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l admin/MahindaCollege2000!@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes))) @run_install.sql 2>&1 | tee install_output.log
         
         echo "===== Installation Output ====="
         cat install_output.log
