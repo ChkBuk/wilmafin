@@ -32,44 +32,44 @@ jobs:
         
 
     
-    - name: Run Installation Script
+    - name: Debug Installation
       run: |
-        echo "===== Starting Installation ====="
-        
-        # 1. First verify SQLcl can run simple queries
-        echo "Testing basic SQLcl functionality..."
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))" <<EOF
-        SET FEEDBACK ON
-        SET SERVEROUTPUT ON
-        SELECT 'SQLCL WORKS: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
-        EXIT;
-        EOF
-        
-        # 2. Create complete wrapper script
-        cat << 'SQL_EOF' > wrapper.sql
+        echo "===== PHASE 1: Verify Files ====="
+        echo "Current directory: $(pwd)"
+        echo "SQLcl version:"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -version
+        echo "Install script exists:"
+        ls -la f105/install.sql || echo "MISSING"
+    
+        echo "===== PHASE 2: Test Minimal Connection ====="
+        CONN="admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
+        echo "SELECT 'CONNECTION_SUCCESS:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;" | \
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN"
+    
+        echo "===== PHASE 3: Run With Full Debug ====="
+        cat << 'EOF' > debug.sql
         SET ECHO ON
         SET FEEDBACK ON
         SET SERVEROUTPUT ON SIZE UNLIMITED
-        SET SQLFORMAT ANSICONSOLE
-        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        WHENEVER SQLERROR CONTINUE
         
-        PROMPT [DEBUG] Current directory:
-        HOST pwd
-        PROMPT [DEBUG] Install script contents:
+        PROMPT === DATABASE INFO ===
+        SELECT * FROM v$version;
+        
+        PROMPT === SCRIPT LOCATION ===
+        HOST echo "PWD: $(pwd)" && ls -la f105/install.sql
+        
+        PROMPT === SCRIPT CONTENTS ===
         HOST cat f105/install.sql
-        PROMPT [DEBUG] Starting execution:
         
+        PROMPT === EXECUTION START ===
         @f105/install.sql
         
-        PROMPT [DEBUG] Script completed
-        SELECT 'COMPLETED_AT: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        PROMPT === EXECUTION END ===
+        SELECT 'FINISHED_AT:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;
         EXIT;
-        SQL_EOF
+        EOF
         
-        # 3. Execute with full debugging
-        echo "===== Running Installation ====="
-        CONN_STRING="(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@$CONN_STRING" @wrapper.sql 2>&1 | tee install.log
-        
-        echo "===== Final Output ====="
-        cat install.log
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -debug -v -l "$CONN" @debug.sql 2>&1 | tee debug.log
+        echo "===== FULL DEBUG OUTPUT ====="
+        cat debug.log
