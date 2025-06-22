@@ -38,13 +38,31 @@ jobs:
         ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
         ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
       run: |
-        echo "Attempting connection to Oracle database..."
-        echo "Using host: $ORACLE_HOST"
-        echo "Using port: $ORACLE_PORT"
-        echo "Using service: $ORACLE_SERVICE"
+        echo "===== Starting Installation ====="
+        echo "Host: $ORACLE_HOST, Service: $ORACLE_SERVICE"
         
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        # Create a wrapper script with output settings
+        cat << 'SQL_EOF' > run_install.sql
+        SET ECHO ON
+        SET FEEDBACK ON
+        SET SERVEROUTPUT ON SIZE UNLIMITED
+        SET SQLFORMAT ANSICONSOLE
+        SET VERIFY ON
         WHENEVER SQLERROR EXIT SQL.SQLCODE
+        
+        -- Add timing information
+        PROMPT Starting script execution at: 
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        
         @f105/install.sql
-        exit;
-        EOF
+        
+        PROMPT Script completed at:
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        EXIT;
+        SQL_EOF
+        
+        # Execute with forced output
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" @run_install.sql 2>&1 | tee install_output.log
+        
+        echo "===== Installation Output ====="
+        cat install_output.log
