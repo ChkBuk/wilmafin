@@ -32,44 +32,38 @@ jobs:
         
 
     
-    - name: Debug Installation
+    - name: Run Installation
       run: |
         echo "===== PHASE 1: Verify Files ====="
         echo "Current directory: $(pwd)"
-        echo "SQLcl version:"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -version
-        echo "Install script exists:"
-        ls -la f105/install.sql || echo "MISSING"
+        ls -la f105/install.sql
     
-        echo "===== PHASE 2: Test Minimal Connection ====="
+        echo "===== PHASE 2: Test Connection ====="
         CONN="admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
-        echo "SELECT 'CONNECTION_SUCCESS:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;" | \
+        
+        # Simple test query
+        echo "SELECT 'CONNECTED_AT:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;" | \
         ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN"
     
-        echo "===== PHASE 3: Run With Full Debug ====="
-        cat << 'EOF' > debug.sql
+        echo "===== PHASE 3: Run Install Script ====="
+        cat << 'EOF' > run_install.sql
         SET ECHO ON
         SET FEEDBACK ON
         SET SERVEROUTPUT ON SIZE UNLIMITED
-        WHENEVER SQLERROR CONTINUE
+        WHENEVER SQLERROR EXIT SQL.SQLCODE
         
-        PROMPT === DATABASE INFO ===
-        SELECT * FROM v$version;
+        PROMPT === PRE-INSTALL CHECK ===
+        SELECT USER FROM dual;
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
         
-        PROMPT === SCRIPT LOCATION ===
-        HOST echo "PWD: $(pwd)" && ls -la f105/install.sql
-        
-        PROMPT === SCRIPT CONTENTS ===
-        HOST cat f105/install.sql
-        
-        PROMPT === EXECUTION START ===
+        PROMPT === RUNNING INSTALL.SQL ===
         @f105/install.sql
         
-        PROMPT === EXECUTION END ===
-        SELECT 'FINISHED_AT:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;
+        PROMPT === POST-INSTALL CHECK ===
+        SELECT 'COMPLETED_AT:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;
         EXIT;
         EOF
-        
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -debug -v -l "$CONN" @debug.sql 2>&1 | tee debug.log
-        echo "===== FULL DEBUG OUTPUT ====="
-        cat debug.log
+    
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN" @run_install.sql 2>&1 | tee install.log
+        echo "===== INSTALLATION OUTPUT ====="
+        cat install.log
