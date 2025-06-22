@@ -39,7 +39,6 @@ jobs:
         ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
       run: |
         echo "===== Starting Installation ====="
-        echo "Host: $ORACLE_HOST, Service: $ORACLE_SERVICE"
         
         # Create a wrapper script with output settings
         cat << 'SQL_EOF' > run_install.sql
@@ -50,7 +49,6 @@ jobs:
         SET VERIFY ON
         WHENEVER SQLERROR EXIT SQL.SQLCODE
         
-        -- Add timing information
         PROMPT Starting script execution at: 
         SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
         
@@ -60,9 +58,12 @@ jobs:
         SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
         EXIT;
         SQL_EOF
+      
+        # Store connection string in variable with proper escaping
+        CONN_STRING="(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"
         
         # Execute with forced output
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l admin/MahindaCollege2000!@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes))) @run_install.sql 2>&1 | tee install_output.log
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@$CONN_STRING" @run_install.sql 2>&1 | tee install_output.log
         
         echo "===== Installation Output ====="
         cat install_output.log
