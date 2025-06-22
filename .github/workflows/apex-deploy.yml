@@ -39,36 +39,25 @@ jobs:
         
     - name: Run SQL with Guaranteed Output
       run: |
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
-        /* CRITICAL SETTINGS */
-        set feedback on
-        set heading on
-        set sqlformat ansiconsole
-        set serveroutput on size unlimited format wrapped
-        
-        /* SIMPLE TEST QUERY */
-        SELECT 
-            'SYSDATE:' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS date_output,
-            'DATABASE:' || (SELECT name FROM v\$database) AS db_info
-        FROM dual;
-        
-        EXIT;
-        EOF
-        
-        echo "---- RAW OUTPUT ----"
-        cat sql_output.log
-
-    - name: Full Diagnostic (Fixed)
-      env:
-        NLS_LANG: AMERICAN_AMERICA.AL32UTF8
-      run: |
         echo "===== ENVIRONMENT ====="
         printenv | grep -E 'ORACLE|PATH|JAVA|SQLCL' || echo "No relevant env vars"
         
         echo "===== CONNECTION TEST ====="
         CONN_STRING="(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))"
-        echo "SELECT 1+1 AS test FROM dual;" | \
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"$CONN_STRING" | tee sql_test.log
         
-        echo "===== RESULTS ====="
-        cat sql_test.log || echo "No output file generated"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"$CONN_STRING" <<EOF
+        /* CRITICAL SETTINGS */
+        set feedback on
+        set heading on
+        set sqlformat ansiconsole
+        set serveroutput on size unlimited
+        set echo on
+        
+        /* SIMPLE TEST QUERY */
+        SELECT 
+            'DB_DATE:' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS date_output,
+            'DB_VERSION:' || (SELECT version FROM v\$instance) AS db_version
+        FROM dual;
+        
+        EXIT;
+        EOF
