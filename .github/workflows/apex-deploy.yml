@@ -29,52 +29,69 @@ jobs:
           echo "Error: install.sql not found at f105/install.sql"
           exit 1
         fi
-        
-
     
-    - name: Run Installation with Full Debugging
+    - name: Configure Oracle Wallet
       run: |
-        echo "===== PHASE 1: Environment Verification ====="
-        echo "Current directory: $(pwd)"
-        echo "Java version: $(java -version 2>&1 | head -1)"
-        echo "SQLcl path: $(which sql || echo 'Not in PATH')"
-        ls -la ${GITHUB_WORKSPACE}/sqlcl/bin/sql
-        ls -la f105/install.sql
-    
-        echo "===== PHASE 2: Direct Connection Test ====="
-        CONN="admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
+        echo "===== Setting Up Wallet ====="
+        WALLET_DIR="$HOME/oracle/wallet"
+        mkdir -p $WALLET_DIR
+        cp -r oci_wallet/* $WALLET_DIR/
         
-        # Test with simple SQL file
-        echo "SELECT 'DIRECT_TEST:'||TO_CHAR(SYSDATE,'HH24:MI:SS')||' USER:'||USER FROM dual;" > test.sql
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN" @test.sql 2>&1 | tee test.log
-        echo "===== TEST OUTPUT ====="
-        cat test.log
+        # Update sqlnet.ora with correct path
+        sed -i "s|?/network/admin|$WALLET_DIR|g" $WALLET_DIR/sqlnet.ora
+        
+        # Set environment variables
+        echo "TNS_ADMIN=$WALLET_DIR" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$WALLET_DIR" >> $GITHUB_ENV
+        
+        echo "Wallet contents:"
+        ls -la $WALLET_DIR
     
-        echo "===== PHASE 3: Full Installation ====="
-        cat << 'EOF' > debug_wrapper.sql
+    - name: Test Connection
+      env:
+        TNS_ADMIN: ${{ env.TNS_ADMIN }}
+        LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}
+      run: |
+        echo "===== Testing Connection ====="
+        CONN="admin/MahindaCollege2000!@ga8e55f0b539d22_sldevdb_high"
+        
+        cat << 'EOF' > test.sql
+        SET ECHO ON
+        SET FEEDBACK ON
+        SET SERVEROUTPUT ON
+        SELECT 'CONNECTED_AS:'||USER||' AT:'||TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        EXIT;
+        EOF
+        
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN" @test.sql 2>&1 | tee conn_test.log
+        echo "===== Connection Output ====="
+        cat conn_test.log
+    
+    - name: Run Installation
+      env:
+        TNS_ADMIN: ${{ env.TNS_ADMIN }}
+        LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}
+      run: |
+        echo "===== Running Installation ====="
+        CONN="admin/MahindaCollege2000!@ga8e55f0b539d22_sldevdb_high"
+        
+        cat << 'EOF' > install_wrapper.sql
         SET ECHO ON
         SET FEEDBACK ON
         SET SERVEROUTPUT ON SIZE UNLIMITED
-        SET SQLFORMAT ANSICONSOLE
-        SET VERIFY ON
         WHENEVER SQLERROR EXIT SQL.SQLCODE
         
-        PROMPT === PRE-EXECUTION DEBUG ===
-        HOST echo "Current dir: $(pwd)"
-        HOST echo "SQLcl path: $(which sql)"
-        SELECT 'START_TIME:'||TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        PROMPT === PRE-INSTALL CHECK ===
+        SELECT * FROM v$version;
         
-        PROMPT === SCRIPT CONTENTS ===
-        HOST cat f105/install.sql
-        
-        PROMPT === EXECUTION START ===
+        PROMPT === RUNNING INSTALL.SQL ===
         @f105/install.sql
         
-        PROMPT === EXECUTION COMPLETE ===
-        SELECT 'END_TIME:'||TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        PROMPT === POST-INSTALL CHECK ===
+        SELECT 'COMPLETED_AT:'||TO_CHAR(SYSDATE,'HH24:MI:SS') FROM dual;
         EXIT;
         EOF
-    
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN" @debug_wrapper.sql 2>&1 | tee install.log
-        echo "===== FULL INSTALLATION OUTPUT ====="
+        
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "$CONN" @install_wrapper.sql 2>&1 | tee install.log
+        echo "===== Installation Output ====="
         cat install.log
