@@ -5,6 +5,13 @@ on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      ORACLE_USER: ${{ secrets.ORACLE_USER }}
+      ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
+      ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+      ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+      ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+      NLS_LANG: AMERICAN_AMERICA.AL32UTF8
     
     steps:
     - uses: actions/checkout@v3
