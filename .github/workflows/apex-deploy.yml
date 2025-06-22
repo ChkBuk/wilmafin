@@ -51,24 +51,17 @@ jobs:
         echo "---- RAW OUTPUT ----"
         cat sql_output.log
 
-    - name: Full Diagnostic
+    - name: Full Diagnostic (Fixed)
+      env:
+        NLS_LANG: AMERICAN_AMERICA.AL32UTF8
       run: |
-        echo "---- SQLCL VERSION ----"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+        echo "===== ENVIRONMENT ====="
+        printenv | grep -E 'ORACLE|PATH|JAVA|SQLCL' || echo "No relevant env vars"
         
-        echo "---- ENV VARIABLES ----"
-        printenv | grep ORACLE
+        echo "===== CONNECTION TEST ====="
+        CONN_STRING="(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))"
+        echo "SELECT 1+1 AS test FROM dual;" | \
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"$CONN_STRING" | tee sql_test.log
         
-        echo "---- CONNECTION TEST ----"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-        set feedback on
-        set timing on
-        SELECT 1+1 AS test_result FROM dual;
-        EXIT;
-        EOF
-        
-    - name: Upload Log
-      uses: actions/upload-artifact@v4
-      with:
-        name: sql-results
-        path: sql_output.log
+        echo "===== RESULTS ====="
+        cat sql_test.log || echo "No output file generated"
