@@ -37,33 +37,45 @@ jobs:
         ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
         ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
         ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+    
+    - name: Run Installation Script
       run: |
         echo "===== Starting Installation ====="
         
-        # Create a wrapper script with output settings
-        cat << 'SQL_EOF' > run_install.sql
+        # 1. First verify SQLcl can run simple queries
+        echo "Testing basic SQLcl functionality..."
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))" <<EOF
+        SET FEEDBACK ON
+        SET SERVEROUTPUT ON
+        SELECT 'SQLCL WORKS: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        EXIT;
+        EOF
+        
+        # 2. Create complete wrapper script
+        cat << 'SQL_EOF' > wrapper.sql
         SET ECHO ON
         SET FEEDBACK ON
         SET SERVEROUTPUT ON SIZE UNLIMITED
         SET SQLFORMAT ANSICONSOLE
-        SET VERIFY ON
         WHENEVER SQLERROR EXIT SQL.SQLCODE
         
-        PROMPT Starting script execution at: 
-        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        PROMPT [DEBUG] Current directory:
+        HOST pwd
+        PROMPT [DEBUG] Install script contents:
+        HOST cat f105/install.sql
+        PROMPT [DEBUG] Starting execution:
         
         @f105/install.sql
         
-        PROMPT Script completed at:
-        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+        PROMPT [DEBUG] Script completed
+        SELECT 'COMPLETED_AT: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
         EXIT;
         SQL_EOF
-      
-        # Store connection string in variable with proper escaping
+        
+        # 3. Execute with full debugging
+        echo "===== Running Installation ====="
         CONN_STRING="(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@$CONN_STRING" @wrapper.sql 2>&1 | tee install.log
         
-        # Execute with forced output
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@$CONN_STRING" @run_install.sql 2>&1 | tee install_output.log
-        
-        echo "===== Installation Output ====="
-        cat install_output.log
+        echo "===== Final Output ====="
+        cat install.log
