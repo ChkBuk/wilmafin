@@ -5,13 +5,6 @@ on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      ORACLE_USER: ${{ secrets.DB_USER }}
-      ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-      ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-      ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
-      NLS_LANG: AMERICAN_AMERICA.AL32UTF8
     
     steps:
     - uses: actions/checkout@v3
@@ -37,27 +30,21 @@ jobs:
           exit 1
         fi
         
-    - name: Run SQL with Guaranteed Output
+    - name: Deploy APEX App
+      env:
+        ORACLE_USER: ${{ secrets.DB_USER }}
+        ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+        ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+        ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
       run: |
-        echo "===== ENVIRONMENT ====="
-        printenv | grep -E 'ORACLE|PATH|JAVA|SQLCL' || echo "No relevant env vars"
+        echo "Attempting connection to Oracle database..."
+        echo "Using host: $ORACLE_HOST"
+        echo "Using port: $ORACLE_PORT"
+        echo "Using service: $ORACLE_SERVICE"
         
-        echo "===== CONNECTION TEST ====="
-        CONN_STRING="(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))"
-        
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v -l $ORACLE_USER/$ORACLE_PASSWORD@"$CONN_STRING" <<EOF
-        /* CRITICAL SETTINGS */
-        set feedback on
-        set heading on
-        set sqlformat ansiconsole
-        set serveroutput on size unlimited
-        set echo on
-        
-        /* SIMPLE TEST QUERY */
-        SELECT 
-            'DB_DATE:' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS date_output,
-            'DB_VERSION:' || (SELECT version FROM v\$instance) AS db_version
-        FROM dual;
-        
-        EXIT;
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
+        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        @f105/install.sql
+        exit;
         EOF
