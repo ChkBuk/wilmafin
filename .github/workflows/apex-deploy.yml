@@ -3,7 +3,7 @@ name: Oracle Database Deployment
 on: [push]
 
 env:
-  SQLCL_VERSION: 23.1.0.0
+  SQLCL_VERSION: 23.4.0
   SQLCL_DIR: ${{ github.workspace }}/sqlcl
   WALLET_DIR: ${{ github.workspace }}/oracle/wallet
 
@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Checkout main repo with submodules (for wallet)
+    # 1. Checkout code with submodules
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
         submodules: 'recursive'
     
-    # 2. Cache SQLcl to speed up subsequent runs
+    # 2. Cache SQLcl
     - name: Cache SQLcl
       id: cache-sqlcl
       uses: actions/cache@v3
@@ -27,17 +27,24 @@ jobs:
         path: ${{ env.SQLCL_DIR }}
         key: sqlcl-${{ env.SQLCL_VERSION }}
     
-    # 3. Download and install SQLcl if not cached
+    # 3. Download and install SQLcl (with fallback URL)
     - name: Install SQLcl
       if: steps.cache-sqlcl.outputs.cache-hit != 'true'
       run: |
         mkdir -p ${{ env.SQLCL_DIR }}
         cd ${{ env.SQLCL_DIR }}
-        wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-${{ env.SQLCL_VERSION }}.zip
+        
+        # Try multiple download sources
+        if ! wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-${{ env.SQLCL_VERSION }}.zip; then
+          echo "Failed primary download, trying archive..."
+          wget https://archive.oracle.com/otn_software/java/sqldeveloper/sqlcl-${{ env.SQLCL_VERSION }}.zip || \
+          (echo "SQLcl download failed" && exit 1)
+        fi
+        
         unzip sqlcl-${{ env.SQLCL_VERSION }}.zip
         rm sqlcl-${{ env.SQLCL_VERSION }}.zip
         chmod +x ${{ env.SQLCL_DIR }}/bin/sql
-        echo "SQLcl installed to ${{ env.SQLCL_DIR }}"
+        echo "SQLcl ${{ env.SQLCL_VERSION }} installed to ${{ env.SQLCL_DIR }}"
     
     # 4. Set up Oracle wallet
     - name: Configure Wallet
