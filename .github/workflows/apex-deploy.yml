@@ -44,18 +44,14 @@ jobs:
     # 4. Set up Oracle wallet
     - name: Configure Wallet
       run: |
-        mkdir -p ${{ env.WALLET_DIR }}
-        cp secrets/oci_wallet/* ${{ env.WALLET_DIR }}/
-        chmod 600 ${{ env.WALLET_DIR }}/*
-        
-        # Update sqlnet.ora with correct path
-        sed -i "s|?/network/admin|${{ env.WALLET_DIR }}|g" ${{ env.WALLET_DIR }}/sqlnet.ora
-        
-        echo "TNS_ADMIN=${{ env.WALLET_DIR }}" >> $GITHUB_ENV
-        echo "LD_LIBRARY_PATH=${{ env.WALLET_DIR }}" >> $GITHUB_ENV
-        
-        echo "Wallet contents:"
-        ls -la ${{ env.WALLET_DIR }}
+        echo "Copying wallet files..."
+        mkdir -p "$HOME/wallet"
+        cp -r oci_wallet/oci_wallet/* "$HOME/wallet/"
+        echo "List $HOME/wallet content:"
+        ls -R "$HOME/wallet"
+        echo "Editing sqlnet.ora..."
+        sed -i 's|?/network/admin|\$TNS_ADMIN|g' "$HOME/wallet/sqlnet.ora"
+      shell: bash
     
     # 5. Run database installation
     - name: Run Installation Script
