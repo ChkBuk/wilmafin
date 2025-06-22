@@ -30,23 +30,30 @@ jobs:
           exit 1
         fi
         
-    - name: Run SQL Query
+    - name: Run SQL Query with Proper Output
       run: |
-        # Run SQL and save output to file
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF > sql_output.log
         set feedback on
+        set echo on
         set sqlformat ansiconsole
-        SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM DUAL;
-        exit;
+        set serveroutput on size unlimited
+        WHENEVER SQLERROR EXIT SQL.SQLCODE
+        
+        -- Query with forced formatting
+        SELECT 'CURRENT_DATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS output FROM DUAL;
+        
+        -- Ensure output is flushed
+        COMMIT;
+        EXIT;
         EOF
     
-        # Display output in logs (optional)
-        echo "---- SQL OUTPUT ----"
+        # Verify log content
+        echo "---- SQL OUTPUT LOG CONTENTS ----"
         cat sql_output.log
-        echo "---- END OUTPUT ----"
+        echo "---- END LOG ----"
     
-    - name: Upload SQL Output Log
+    - name: Upload Log
       uses: actions/upload-artifact@v4
       with:
-        name: sql-output-log
+        name: sql-results
         path: sql_output.log
