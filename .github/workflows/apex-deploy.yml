@@ -29,23 +29,18 @@ jobs:
     
     # 3. Download and install SQLcl (with fallback URL)
     - name: Install SQLcl
-      if: steps.cache-sqlcl.outputs.cache-hit != 'true'
       run: |
-        mkdir -p ${{ env.SQLCL_DIR }}
-        cd ${{ env.SQLCL_DIR }}
+        sudo apt-get update
+        sudo apt-get install -y wget unzip default-jre
+        wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+        unzip sqlcl-latest.zip
+        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH  # Updated path addition method
         
-        # Try multiple download sources
-        if ! wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-${{ env.SQLCL_VERSION }}.zip; then
-          echo "Failed primary download, trying archive..."
-          wget https://archive.oracle.com/otn_software/java/sqldeveloper/sqlcl-${{ env.SQLCL_VERSION }}.zip || \
-          (echo "SQLcl download failed" && exit 1)
-        fi
-        
-        unzip sqlcl-${{ env.SQLCL_VERSION }}.zip
-        rm sqlcl-${{ env.SQLCL_VERSION }}.zip
-        chmod +x ${{ env.SQLCL_DIR }}/bin/sql
-        echo "SQLcl ${{ env.SQLCL_VERSION }} installed to ${{ env.SQLCL_DIR }}"
-    
+    - name: Verify SQLcl installation
+      run: |
+        echo "SQLcl path: $(which sql || echo 'Not found')"
+        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
+            
     # 4. Set up Oracle wallet
     - name: Configure Wallet
       run: |
