@@ -6,8 +6,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      ORACLE_USER: ${{ secrets.ORACLE_USER }}
-      ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
+      ORACLE_USER: ${{ secrets.DB_USER }}
+      ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
       ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
       ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
       ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
