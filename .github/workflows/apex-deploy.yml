@@ -125,6 +125,7 @@ jobs:
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
           ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          ORACLE_HOST: ${{ vars.ORACLE_HOST }}
-          ORACLE_PORT: ${{ vars.ORACLE_PORT }}
-          ORACLE_SERVICE: ${{ vars.ORACLE_SERVICE }}
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+          DB_ALIAS: ${{vars.DB_ALIAS}}
