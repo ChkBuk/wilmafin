@@ -22,6 +22,40 @@ jobs:
           path: oci_wallet
           token: "${{ secrets.ACCESS_TOKEN }}"
 
+      - name: Checkout private wallet repo
+        uses: actions/checkout@v4
+        with:
+          repository: ChkBuk/secretsrepo
+          path: oci_wallet
+          token: "${{ secrets.ACCESS_TOKEN }}"
+          
+      - name: Verify Wallet Files
+        run: |
+          echo "===== Wallet Verification ====="
+          echo "Checking oci_wallet directory..."
+          
+          if [ ! -d "oci_wallet" ]; then
+            echo "❌ Error: oci_wallet directory not found!"
+            echo "Current directory contents:"
+            ls -la
+            exit 1
+          fi
+          
+          echo "Wallet contents:"
+          ls -la oci_wallet/
+          
+          REQUIRED_FILES=("cwallet.sso" "tnsnames.ora" "sqlnet.ora")
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "oci_wallet/$file" ]; then
+              echo "❌ Error: Missing required wallet file - $file"
+              exit 1
+            else
+              echo "✔ Found: $file"
+            fi
+          done
+          
+          echo "===== Wallet Verified Successfully ====="
+          
       - name: Setup Java 17
         uses: actions/setup-java@v3
         with:
