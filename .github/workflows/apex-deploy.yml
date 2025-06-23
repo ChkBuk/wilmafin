@@ -50,21 +50,31 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install SQLcl Properly
+      - name: Install SQLcl 
         run: |
-          # Remove any system SQLcl
+          # Clean up any existing installations
           sudo rm -f /usr/bin/sql
           
-          # Download and install fresh
+          # Setup directories
           SQLCL_DIR="$HOME/sqlcl"
           mkdir -p "$SQLCL_DIR"
           cd "$SQLCL_DIR"
           
+          # Download and extract
           echo "Downloading SQLcl..."
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip sqlcl.zip
+          unzip -q sqlcl.zip -d "$SQLCL_DIR"
           rm sqlcl.zip
-          chmod +x bin/sql
+          
+          # Handle nested directory structure
+          if [ -d "$SQLCL_DIR/sqlcl" ]; then
+            echo "Moving files from nested directory..."
+            mv "$SQLCL_DIR/sqlcl"/* "$SQLCL_DIR"/
+            rm -r "$SQLCL_DIR/sqlcl"
+          fi
+          
+          # Set permissions
+          chmod +x "$SQLCL_DIR/bin/sql"
           
           # Verify installation
           echo "SQLcl version:"
@@ -72,15 +82,6 @@ jobs:
           
           # Add to PATH
           echo "$SQLCL_DIR/bin" >> $GITHUB_PATH
-      
-      - name: Verify Installation
-        run: |
-          echo "===== PATH ====="
-          echo "$PATH"
-          
-          echo "===== SQLcl Info ====="
-          which sql
-          sql -version
 
       - name: Configure Wallet
         run: |
