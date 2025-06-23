@@ -95,57 +95,81 @@ jobs:
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
 
-      - name: Query SYSDATE
+      - name: Test Oracle Connection
+        id: test-connection
         run: |
-          echo "===== Testing Connection ====="
-          CONN_STRING="(description=(address=(protocol=tcps)(host=$ORACLE_HOST)(port=$ORACLE_PORT)(connect_data=(service_name=$ORACLE_SERVICE)))"
+          echo "===== Oracle Connection Test ====="
+          echo "Using SQLcl: $(which sql)"
+          echo "Version: $(sql -version)"
           
-          # Write SQL to file for better control
-          cat << 'SQL_EOF' > query.sql
+          # Create temp directory for artifacts
+          mkdir -p oracle_test
+          cd oracle_test
+          
+          # Build connection string with all security parameters
+          CONN_STRING="(description=(
+            retry_count=3)
+            (retry_delay=3)
+            (address=(protocol=tcps)
+              (host=${{ secrets.ORACLE_HOST }})
+              (port=${{ secrets.ORACLE_PORT }}))
+            (connect_data=(service_name=${{ secrets.ORACLE_SERVICE }}))
+            (security=(
+              ssl_server_cert_dn=\"CN=adb.ap-melbourne-1.oraclecloud.com,OU=Oracle ADB,O=Oracle Corporation,L=Redwood City,ST=California,C=US\"
+              ssl_server_dn_match=yes))
+          )"
+          
+          # Create test script with all output options
+          cat << 'SQL_EOF' > oracle_test.sql
+          /* OUTPUT FORCE SETTINGS */
           SET ECHO ON
           SET FEEDBACK ON
-          SET SERVEROUTPUT ON SIZE UNLIMITED
+          SET HEADING ON
+          SET LINESIZE 1000
+          SET PAGESIZE 10000
+          SET SERVEROUTPUT ON SIZE UNLIMITED FORMAT WRAPPED
           SET SQLFORMAT ANSICONSOLE
+          SET TERMOUT ON
+          SET TIMING ON
           SET VERIFY ON
+          WHENEVER SQLERROR EXIT SQL.SQLCODE
           
-          PROMPT === CONNECTION TEST ===
-          SELECT 'DB_TIME: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+          /* CONNECTION TESTS */
+          PROMPT [1/3] === BASIC QUERY TEST ===
+          SELECT 'CONNECTION_SUCCESS:'||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
           
-          PROMPT === VERSION INFO ===
+          PROMPT [2/3] === VERSION INFO ===
           SELECT * FROM v$version;
+          
+          PROMPT [3/3] === NETWORK CONFIG ===
+          SELECT 
+            SYS_CONTEXT('USERENV', 'NETWORK_PROTOCOL') AS protocol,
+            SYS_CONTEXT('USERENV', 'SERVER_HOST') AS host,
+            SYS_CONTEXT('USERENV', 'SERVICE_NAME') AS service
+          FROM dual;
           
           EXIT;
           SQL_EOF
           
-          # Execute with forced output
-          $HOME/sqlcl/bin/sql -v -l "admin/MahindaCollege2000!@(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes))" @query.sql 2>&1 | tee output.log
+          # Execute with full debugging
+          echo "Executing connection test..."
+          sql -v -l "${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@$CONN_STRING" @oracle_test.sql 2>&1 | tee oracle_test.log
           
-          echo "===== FULL OUTPUT ====="
-          cat output.log
+          # Verify successful output
+          if grep -q "CONNECTION_SUCCESS" oracle_test.log; then
+            echo "✅ Oracle connection successful"
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Connection failed - dumping debug info:"
+            echo "=== LAST 20 LINES ==="
+            tail -n 20 oracle_test.log
+            echo "=== WALLET CONTENTS ==="
+            ls -la $TNS_ADMIN
+            echo "=== NETWORK CHECK ==="
+            nc -zv ${{ secrets.ORACLE_HOST }} ${{ secrets.ORACLE_PORT }}
+            exit 1
+          end
         env:
-          ORACLE_USER: ${{ secrets.DB_USER }}
-          ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
-          DB_ALIAS: ${{vars.DB_ALIAS}}
-
-      - name: Install SQL*Plus Correctly
-        run: |
-          # Install exact dependencies for Ubuntu 22.04
-          sudo apt-get update
-          sudo apt-get install -y libaio1 wget unzip
-          
-          # Download Instant Client (Basic Lite package)
-          wget https://download.oracle.com/otn_software/linux/instantclient/219000/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
-          unzip instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
-          sudo mv instantclient_21_9 /opt/oracle
-          sudo sh -c "echo /opt/oracle/instantclient_21_9 > /etc/ld.so.conf.d/oracle-instantclient.conf"
-          sudo ldconfig
-          
-          # Add to PATH
-          echo "/opt/oracle/instantclient_21_9" >> $GITHUB_PATH
-          
-          # Verify installation
-          echo "SELECT 'SQLPLUS_WORKS:'||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;" | \
-          /opt/oracle/instantclient_21_9/sqlplus -s "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522)(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
+          TNS_ADMIN: ${{ env.WALLET_DIR }}
+          LD_LIBRARY_PATH: ${{ env.WALLET_DIR }}
+          PATH: ${{ env.SQLCL_DIR }}/bin:$PATH
