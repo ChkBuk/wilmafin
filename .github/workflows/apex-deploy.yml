@@ -133,11 +133,11 @@ jobs:
       - name: Install SQL*Plus
         run: |
           sudo apt-get update
-          sudo apt-get install -y libaio1
+          sudo apt-get install -y libaio1  # Correct package name for Ubuntu 22.04
           wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip
           unzip instantclient-basiclite-linuxx64.zip
           echo "$(pwd)/instantclient_21_11" >> $GITHUB_PATH
           
-          # Test installation
+          # Verify installation
           echo "SELECT 'INSTALL_TEST:'||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;" | \
           sqlplus -s "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522)(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
