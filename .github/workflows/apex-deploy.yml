@@ -130,14 +130,22 @@ jobs:
           ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
           DB_ALIAS: ${{vars.DB_ALIAS}}
 
-      - name: Install SQL*Plus
+      - name: Install SQL*Plus Correctly
         run: |
+          # Install exact dependencies for Ubuntu 22.04
           sudo apt-get update
-          sudo apt-get install -y libaio1  # Correct package name for Ubuntu 22.04
-          wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip
-          unzip instantclient-basiclite-linuxx64.zip
-          echo "$(pwd)/instantclient_21_11" >> $GITHUB_PATH
+          sudo apt-get install -y libaio1 wget unzip
+          
+          # Download Instant Client (Basic Lite package)
+          wget https://download.oracle.com/otn_software/linux/instantclient/219000/instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+          unzip instantclient-basiclite-linux.x64-21.9.0.0.0dbru.zip
+          sudo mv instantclient_21_9 /opt/oracle
+          sudo sh -c "echo /opt/oracle/instantclient_21_9 > /etc/ld.so.conf.d/oracle-instantclient.conf"
+          sudo ldconfig
+          
+          # Add to PATH
+          echo "/opt/oracle/instantclient_21_9" >> $GITHUB_PATH
           
           # Verify installation
-          echo "SELECT 'INSTALL_TEST:'||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;" | \
-          sqlplus -s "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522)(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
+          echo "SELECT 'SQLPLUS_WORKS:'||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;" | \
+          /opt/oracle/instantclient_21_9/sqlplus -s "admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(host=adb.ap-melbourne-1.oraclecloud.com)(port=1522)(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))"
