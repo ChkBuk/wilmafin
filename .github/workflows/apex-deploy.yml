@@ -1,89 +1,55 @@
-name: Oracle Database Deployment
+name: Query SYSDATE from Oracle Autonomous DB
 
 on: [push]
-
-env:
-  SQLCL_VERSION: 23.4.0
-  SQLCL_DIR: ${{ github.workspace }}/sqlcl
-  WALLET_DIR: ${{ github.workspace }}/oracle/wallet
-
+permissions:
+  contents: read 
 jobs:
-  deploy:
+  query-sysdate:
+    environment: Development
     runs-on: ubuntu-latest
-    
     steps:
-    # 1. Checkout code with submodules
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
-        submodules: 'recursive'
-    
-    # 2. Cache SQLcl
-    - name: Cache SQLcl
-      id: cache-sqlcl
-      uses: actions/cache@v3
-      with:
-        path: ${{ env.SQLCL_DIR }}
-        key: sqlcl-${{ env.SQLCL_VERSION }}
-    
-    # 3. Download and install SQLcl (with fallback URL)
-    - name: Install SQLcl
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget unzip default-jre
-        wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-        unzip sqlcl-latest.zip
-        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH  # Updated path addition method
+      - name: Checkout Public Repo
+        uses: actions/checkout@v4
         
-    - name: Verify SQLcl installation
-      run: |
-        echo "SQLcl path: $(which sql || echo 'Not found')"
-        ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
-            
-    # 4. Set up Oracle wallet
-    - name: Configure Wallet
-      run: |
-        echo "Copying wallet files..."
-        mkdir -p "$HOME/wallet"
-        cp -r oci_wallet/* "$HOME/wallet/"
-        echo "List $HOME/wallet content:"
-        ls -R "$HOME/wallet"
-        echo "Editing sqlnet.ora..."
-        sed -i 's|?/network/admin|\$TNS_ADMIN|g' "$HOME/wallet/sqlnet.ora"
-      shell: bash
-    
-    # 5. Run database installation
-    - name: Run Installation Script
-      env:
-        PATH: ${{ env.SQLCL_DIR }}/bin:$PATH
-        TNS_ADMIN: ${{ env.TNS_ADMIN }}
-        LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}
-      run: |
-        echo "===== Starting Installation ====="
-        echo "Using SQLcl: $(which sql)"
-        echo "Version: $(sql -version)"
-        
-        cat << 'EOF' > run_install.sql
-        SET ECHO ON
-        SET FEEDBACK ON
-        SET SERVEROUTPUT ON SIZE UNLIMITED
-        SET SQLFORMAT ANSICONSOLE
-        WHENEVER SQLERROR EXIT SQL.SQLCODE
-        
-        PROMPT === PRE-INSTALL CHECK ===
-        SELECT 'Connected as: '||USER FROM dual;
-        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS current_time FROM dual;
-        
-        PROMPT === RUNNING INSTALL.SQL ===
-        @f105/install.sql
-        
-        PROMPT === POST-INSTALL CHECK ===
-        SELECT 'COMPLETED_AT: '||TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
-        EXIT;
-        EOF
-        
-        sql -v -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ vars.DB_ALIAS }} @run_install.sql 2>&1 | tee install.log
-        
-        echo "===== INSTALLATION OUTPUT ====="
-        cat install.log
+      - name: Print variables
+        run: |
+          echo ${{ vars.ACCESS_TOKEN }}
+          
+      - name: Checkout private wallet repo
+        uses: actions/checkout@v4
+        with:
+          repository: ChkBuk/secretsrepo
+          path: oci_wallet
+          token: "${{ vars.ACCESS_TOKEN }}"
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install SQLcl
+        run: |
+          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+          unzip sqlcl.zip -d sqlcl
+
+      - name: Configure Wallet
+        run: |
+          mkdir -p $HOME/wallet
+          cp -r oci_wallet/* $HOME/wallet/
+          sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
+        shell: bash
+
+      - name: Set Env Variables
+        run: |
+          echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
+          echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
+
+      - name: Query SYSDATE
+        run: |
+          echo "SELECT SYSDATE FROM DUAL;" > query.sql
+          sql ${DB_USER}/${DB_PASSWORD}@${DB_ALIAS} @query.sql
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_ALIAS: ${{ vars.DB_ALIAS }}
