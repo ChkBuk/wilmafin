@@ -118,7 +118,7 @@ jobs:
           SQL_EOF
           
           # Execute with forced output
-          $HOME/sqlcl/bin/sql -v -l "$ORACLE_USER/$ORACLE_PASSWORD@$CONN_STRING" @query.sql 2>&1 | tee output.log
+          $HOME/sqlcl/bin/sql -v -l "$ORACLE_USER/$ORACLE_PASSWORD@$DB_ALIAS" @query.sql 2>&1 | tee output.log
           
           echo "===== FULL OUTPUT ====="
           cat output.log
