@@ -13,14 +13,14 @@ jobs:
         
       - name: Print variables
         run: |
-          echo ${{ vars.ACCESS_TOKEN }}
+          echo ${{ secrets.ACCESS_TOKEN }}
           
       - name: Checkout private wallet repo
         uses: actions/checkout@v4
         with:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
-          token: "${{ vars.ACCESS_TOKEN }}"
+          token: "${{ secrets.ACCESS_TOKEN }}"
 
       - name: Setup Java 17
         uses: actions/setup-java@v3
