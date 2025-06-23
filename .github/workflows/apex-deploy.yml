@@ -95,25 +95,36 @@ jobs:
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
 
-      - name: Deploy APEX App
+      - name: Query SYSDATE
+        run: |
+          echo "===== Testing Connection ====="
+          CONN_STRING="(description=(address=(protocol=tcps)(host=$ORACLE_HOST)(port=$ORACLE_PORT)(connect_data=(service_name=$ORACLE_SERVICE)))"
+          
+          # Write SQL to file for better control
+          cat << 'SQL_EOF' > query.sql
+          SET ECHO ON
+          SET FEEDBACK ON
+          SET SERVEROUTPUT ON SIZE UNLIMITED
+          SET SQLFORMAT ANSICONSOLE
+          SET VERIFY ON
+          
+          PROMPT === CONNECTION TEST ===
+          SELECT 'DB_TIME: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM dual;
+          
+          PROMPT === VERSION INFO ===
+          SELECT * FROM v$version;
+          
+          EXIT;
+          SQL_EOF
+          
+          # Execute with forced output
+          $HOME/sqlcl/bin/sql -v -l "$ORACLE_USER/$ORACLE_PASSWORD@$CONN_STRING" @query.sql 2>&1 | tee output.log
+          
+          echo "===== FULL OUTPUT ====="
+          cat output.log
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
           ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
-        run: |
-          echo "Attempting connection to Oracle database..."
-          echo "Using host: $ORACLE_HOST"
-          echo "Using port: $ORACLE_PORT"
-          echo "Using service: $ORACLE_SERVICE"
-          
-          $HOME/sqlcl/bin/sql -v $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-          set feedback on
-          set sqlformat ansiconsole  /* Forces output display */
-          set serveroutput on       /* Ensures output isn't suppressed */
-          
-          SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS current_date FROM DUAL;
-          
-          exit;
-          EOF
+          ORACLE_HOST: ${{ vars.ORACLE_HOST }}
+          ORACLE_PORT: ${{ vars.ORACLE_PORT }}
+          ORACLE_SERVICE: ${{ vars.ORACLE_SERVICE }}
