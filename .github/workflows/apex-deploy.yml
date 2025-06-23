@@ -50,10 +50,37 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install SQLcl
+      - name: Install SQLcl Properly
         run: |
+          # Remove any system SQLcl
+          sudo rm -f /usr/bin/sql
+          
+          # Download and install fresh
+          SQLCL_DIR="$HOME/sqlcl"
+          mkdir -p "$SQLCL_DIR"
+          cd "$SQLCL_DIR"
+          
+          echo "Downloading SQLcl..."
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip sqlcl.zip -d sqlcl
+          unzip sqlcl.zip
+          rm sqlcl.zip
+          chmod +x bin/sql
+          
+          # Verify installation
+          echo "SQLcl version:"
+          "$SQLCL_DIR/bin/sql" -version
+          
+          # Add to PATH
+          echo "$SQLCL_DIR/bin" >> $GITHUB_PATH
+      
+      - name: Verify Installation
+        run: |
+          echo "===== PATH ====="
+          echo "$PATH"
+          
+          echo "===== SQLcl Info ====="
+          which sql
+          sql -version
 
       - name: Configure Wallet
         run: |
@@ -67,19 +94,6 @@ jobs:
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
 
-      - name: Verify SQLcl installation
-        run: |
-          echo "SQLcl path: $(which sql || echo 'Not found')"
-          ${GITHUB_WORKSPACE}/sqlcl/bin/sql -v
-          
-      - name: Verify install script exists
-        run: |
-          ls -la f105/install.sql
-          if [ ! -f "f105/install.sql" ]; then
-            echo "Error: install.sql not found at f105/install.sql"
-            exit 1
-          fi
-          
       - name: Deploy APEX App
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
