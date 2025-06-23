@@ -28,7 +28,20 @@ jobs:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
           token: "${{ secrets.ACCESS_TOKEN }}"
+      
+      - name: Debug Wallet Structure
+        run: |
+          echo "===== Repository Structure ====="
+          find . -type d | sort
           
+          echo "===== oci_wallet Contents ====="
+          if [ -d "oci_wallet/oci_wallet" ]; then
+            echo "⚠️ Nested oci_wallet directory found!"
+            ls -la oci_wallet/oci_wallet/
+          else
+            ls -la oci_wallet/
+          fi
+    
       - name: Verify Wallet Files
         run: |
           echo "===== Wallet Verification ====="
