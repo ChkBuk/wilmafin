@@ -66,7 +66,7 @@ jobs:
           ls -R $WALLET_DIR/  # Recursive listing
           
           # Fix sqlnet.ora (replace placeholder)
-          sed -i "s|DIRECTORY=\"?/network/admin\"|DIRECTORY=\"$WALLET_DIR\oci_wallet"|g" "$WALLET_DIR//oci_wallet/sqlnet.ora"
+          sed -i "s|DIRECTORY=\"?/network/admin\"|DIRECTORY=\"$WALLET_DIR"|g" "$WALLET_DIR//oci_wallet/sqlnet.ora"
           
           # Verify wallet files
           echo "===== Final Wallet Contents ====="
