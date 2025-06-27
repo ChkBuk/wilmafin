@@ -110,7 +110,7 @@ jobs:
             )" > $HOME/network/admin/tnsnames.ora
           
           echo "Testing with TNS entry..."
-          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@TESTDB <<< "SELECT 'TNS connection test' FROM DUAL;"
+          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ vars.DB_ALIAS }} <<< "SELECT 'TNS connection test' FROM DUAL;"
           
       
       - name: Deploy APEX App
