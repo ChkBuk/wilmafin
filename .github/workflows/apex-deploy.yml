@@ -106,11 +106,8 @@ jobs:
           echo "Using port: $ORACLE_PORT"
           echo "Using service: $ORACLE_SERVICE"
           
-          $HOME/sqlcl/bin/sql -V $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-          set feedback on
-          set sqlformat ansiconsole  /* Forces output display */
-          set serveroutput on       /* Ensures output isn't suppressed */
-          
+          $HOME/sqlcl/bin/sql -V '$ORACLE_USER/$ORACLE_PASSWORD@(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))' <<EOF
+
           SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS current_date FROM DUAL;
           
           exit;
