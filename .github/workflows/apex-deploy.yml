@@ -106,18 +106,12 @@ jobs:
           DB_ALIAS: ${{ vars.DB_ALIAS }}
           
         run: |
-          echo "Creating tnsnames.ora entry..."
-          mkdir -p $HOME/network/admin
-          echo "
-          TESTDB =
-            (DESCRIPTION =
+          echo "Testing with TNS entry..."
+          $HOME/sqlcl/bin/sql -l $ORACLE_USER/$ORACLE_PASSWORD@(DESCRIPTION =
               (ADDRESS = (PROTOCOL = TCP)(HOST = ${{ secrets.ORACLE_HOST }})(PORT = ${{ secrets.ORACLE_PORT }}))
               (CONNECT_DATA =
                 (SERVER = DEDICATED)
-                (SERVICE_NAME = ${{ secrets.ORACLE_SERVICE }})
+                (SERVICE_NAME = $ORACLE_SERVICE)
               )
-            )" > $HOME/network/admin/tnsnames.ora
-          
-          echo "Testing with TNS entry..."
-          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@$DB_ALIAS <<< "SELECT 'TNS connection test' FROM DUAL;"
+            ) <<< "SELECT 'TNS connection test' FROM DUAL;"
           
