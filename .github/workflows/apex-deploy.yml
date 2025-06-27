@@ -61,6 +61,9 @@ jobs:
           
           # Copy wallet files (handle nested dirs)
           cp -r oci_wallet/* "$WALLET_DIR/" || cp -r oci_wallet/oci_wallet/* "$WALLET_DIR/"
+
+          echo "===== Wallet Direcroy ====="
+          ls -R $WALLET_DIR/  # Recursive listing
           
           # Fix sqlnet.ora (replace placeholder)
           sed -i "s|DIRECTORY=\"?/network/admin\"|DIRECTORY=\"$WALLET_DIR\"|g" "$WALLET_DIR/sqlnet.ora"
