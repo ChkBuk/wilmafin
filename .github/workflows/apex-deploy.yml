@@ -65,16 +65,10 @@ jobs:
           echo "===== Wallet Direcroy ====="
           ls -R $WALLET_DIR/  # Recursive listing
           
-          # Fix sqlnet.ora (replace placeholder)
-          sed -i "s|DIRECTORY=\"?/network/admin\"|DIRECTORY=\"$WALLET_DIR"|g" "$WALLET_DIR//oci_wallet/sqlnet.ora"
-          
-          # Verify wallet files
-          echo "===== Final Wallet Contents ====="
-          ls -la "$WALLET_DIR//oci_wallet"
 
       - name: Set Environment Variables
         run: |
-          echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
+          echo "TNS_ADMIN=$HOME/wallet/oci_wallet" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=$HOME/wallet" >> $GITHUB_ENV  # Needed for Linux
 
       - name: Test Connection
