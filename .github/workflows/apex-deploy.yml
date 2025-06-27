@@ -95,10 +95,6 @@ jobs:
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
       
 
-      - name: Simple connection test
-        run: |
-          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.ORACLE_HOST }}:${{ secrets.ORACLE_PORT }}/${{ secrets.ORACLE_SERVICE }} <<< "SELECT 1 FROM DUAL;"       
-
       - name: Check TNS connectivity
         run: |
           echo "Creating tnsnames.ora entry..."
