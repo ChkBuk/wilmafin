@@ -42,7 +42,10 @@ jobs:
             ls -la oci_wallet/
           fi
     
-     
+      - name: Get GitHub Actions IP Ranges
+        run: |
+          echo "GitHub Actions IP Ranges:"
+          curl -s https://api.github.com/meta | jq -r '.actions[]'
           
       - name: Setup Java 17
         uses: actions/setup-java@v3
