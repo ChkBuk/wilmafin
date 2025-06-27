@@ -96,22 +96,17 @@ jobs:
       
 
       
-      - name: Deploy APEX App
+      - name: Check TNS connectivity
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
           ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
           ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
           ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
           ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
-          DB_ALIAS: ${{ vars.DB_ALIAS }}
-          
         run: |
           echo "Testing with TNS entry..."
-          $HOME/sqlcl/bin/sql -l $ORACLE_USER/$ORACLE_PASSWORD@(DESCRIPTION =
-              (ADDRESS = (PROTOCOL = TCP)(HOST = ${{ secrets.ORACLE_HOST }})(PORT = ${{ secrets.ORACLE_PORT }}))
-              (CONNECT_DATA =
-                (SERVER = DEDICATED)
-                (SERVICE_NAME = $ORACLE_SERVICE)
-              )
-            ) <<< "SELECT 'TNS connection test' FROM DUAL;"
           
+          # Single-line TNS descriptor (no line breaks)
+          TNS_DESCRIPTOR="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=$ORACLE_HOST)(PORT=$ORACLE_PORT))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=$ORACLE_SERVICE)))"
+          
+          $HOME/sqlcl/bin/sql -l "$ORACLE_USER/$ORACLE_PASSWORD@$TNS_DESCRIPTOR" <<< "SELECT 'TNS connection test' FROM DUAL;"
