@@ -42,10 +42,14 @@ jobs:
             ls -la oci_wallet/
           fi
     
-      - name: Get GitHub Actions IP Ranges
+      - name: Get and Whitelist Runner IP
         run: |
-          echo "GitHub Actions IP Ranges:"
-          curl -s https://api.github.com/meta | jq -r '.actions[]'
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          echo "Current Runner IP: ${RUNNER_IP}"
+          # Use OCI CLI to whitelist this IP (example)
+          oci network security-list update \
+            --security-list-id $OCI_SECURITY_LIST_ID \
+            --ingress-security-rules '[{"source": "'${RUNNER_IP}'/32", "protocol": "6", "tcp-options": {"destination-port-range": {"min": 1522, "max": 1522}}}]'
           
       - name: Setup Java 17
         uses: actions/setup-java@v3
