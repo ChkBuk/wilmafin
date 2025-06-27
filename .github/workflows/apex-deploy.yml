@@ -104,24 +104,6 @@ jobs:
         run: |
           $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.ORACLE_HOST }}:${{ secrets.ORACLE_PORT }}/${{ secrets.ORACLE_SERVICE }} <<< "SELECT 1 FROM DUAL;"       
 
-      - name: Check TNS connectivity
-        run: |
-          echo "Creating tnsnames.ora entry..."
-          mkdir -p $HOME/network/admin
-          echo "
-          TESTDB =
-            (DESCRIPTION =
-              (ADDRESS = (PROTOCOL = TCP)(HOST = ${{ secrets.ORACLE_HOST }})(PORT = ${{ secrets.ORACLE_PORT }}))
-              (CONNECT_DATA =
-                (SERVER = DEDICATED)
-                (SERVICE_NAME = ${{ secrets.ORACLE_SERVICE }})
-              )
-            )" > $HOME/network/admin/tnsnames.ora
-          
-          echo "Testing with TNS entry..."
-          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@TESTDB <<< "SELECT 'TNS connection test' FROM DUAL;"
-          
-      
       - name: Deploy APEX App
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
