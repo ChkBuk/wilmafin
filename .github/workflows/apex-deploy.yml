@@ -95,7 +95,16 @@ jobs:
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
       
 
-      - name: Check TNS connectivity
+      
+      - name: Deploy APEX App
+        env:
+          ORACLE_USER: ${{ secrets.DB_USER }}
+          ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
+          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+          DB_ALIAS: ${{ vars.DB_ALIAS }}
+          
         run: |
           echo "Creating tnsnames.ora entry..."
           mkdir -p $HOME/network/admin
@@ -110,27 +119,5 @@ jobs:
             )" > $HOME/network/admin/tnsnames.ora
           
           echo "Testing with TNS entry..."
-          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ vars.DB_ALIAS }} <<< "SELECT 'TNS connection test' FROM DUAL;"
+          $HOME/sqlcl/bin/sql -l ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@$DB_ALIAS <<< "SELECT 'TNS connection test' FROM DUAL;"
           
-      
-      - name: Deploy APEX App
-        env:
-          ORACLE_USER: ${{ secrets.DB_USER }}
-          ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
-          DB_ALIAS: ${{ vars.DB_ALIAS }}
-          
-        run: |
-          echo "Attempting connection to Oracle database..."
-          echo "Using host: $ORACLE_HOST"
-          echo "Using port: $ORACLE_PORT"
-          echo "Using service: $ORACLE_SERVICE"
-          
-          $HOME/sqlcl/bin/sql -l $ORACLE_USER/$ORACLE_PASSWORD@"(description=(address=(protocol=tcp)(host=$ORACLE_HOST)(port=$ORACLE_PORT))(connect_data=(service_name=$ORACLE_SERVICE)))" <<EOF
-
-          SELECT 'SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') AS current_date FROM DUAL;
-          
-          exit;
-          EOF
