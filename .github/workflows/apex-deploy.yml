@@ -11,37 +11,17 @@ jobs:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
         
-      - name: Print variables
-        run: |
-          echo ${{ secrets.ACCESS_TOKEN }}
-          
-      - name: Checkout private wallet repo
+      - name: Checkout Private Wallet Repo
         uses: actions/checkout@v4
         with:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
           token: "${{ secrets.ACCESS_TOKEN }}"
 
-      - name: Checkout private wallet repo
-        uses: actions/checkout@v4
-        with:
-          repository: ChkBuk/secretsrepo
-          path: oci_wallet
-          token: "${{ secrets.ACCESS_TOKEN }}"
-      
       - name: Debug Wallet Structure
         run: |
-          echo "===== Repository Structure ====="
-          find . -type d | sort
-          
-          echo "===== oci_wallet Contents ====="
-          if [ -d "oci_wallet/oci_wallet" ]; then
-            echo "⚠️ Nested oci_wallet directory found!"
-            ls -la oci_wallet/oci_wallet/
-          else
-            ls -la oci_wallet/
-          fi
-
+          echo "===== Wallet Contents ====="
+          ls -R oci_wallet/  # Recursive listing
 
       - name: Setup Java 17
         uses: actions/setup-java@v3
@@ -51,60 +31,44 @@ jobs:
 
       - name: Install SQLcl 
         run: |
-          # Clean up any existing installations
-          sudo rm -f /usr/bin/sql
-          
-          # Setup directories
           SQLCL_DIR="$HOME/sqlcl"
           mkdir -p "$SQLCL_DIR"
-          cd "$SQLCL_DIR"
-          
-          # Download and extract
-          echo "Downloading SQLcl..."
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
           unzip -q sqlcl.zip -d "$SQLCL_DIR"
           rm sqlcl.zip
-          
-          # Handle nested directory structure
-          if [ -d "$SQLCL_DIR/sqlcl" ]; then
-            echo "Moving files from nested directory..."
-            mv "$SQLCL_DIR/sqlcl"/* "$SQLCL_DIR"/
-            rm -r "$SQLCL_DIR/sqlcl"
-          fi
-          
-          # Set permissions
           chmod +x "$SQLCL_DIR/bin/sql"
-          
-          # Verify installation
-          echo "SQLcl version:"
-          "$SQLCL_DIR/bin/sql" -version
-          
-          # Add to PATH
           echo "$SQLCL_DIR/bin" >> $GITHUB_PATH
+
       - name: Configure Wallet
         run: |
-          mkdir -p $HOME/wallet
-          cp -r oci_wallet/oci_wallet/* $HOME/wallet/
-          sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
-        shell: bash
+          WALLET_DIR="$HOME/wallet"
+          mkdir -p "$WALLET_DIR"
+          
+          # Copy wallet files (handle nested dirs)
+          cp -r oci_wallet/* "$WALLET_DIR/" || cp -r oci_wallet/oci_wallet/* "$WALLET_DIR/"
+          
+          # Fix sqlnet.ora (replace placeholder)
+          sed -i "s|DIRECTORY=\"?/network/admin\"|DIRECTORY=\"$WALLET_DIR\"|g" "$WALLET_DIR/sqlnet.ora"
+          
+          # Verify wallet files
+          echo "===== Final Wallet Contents ====="
+          ls -la "$WALLET_DIR/"
 
-      - name: Set Env Variables
+      - name: Set Environment Variables
         run: |
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
-          echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
-      
-      - name: Check TNS connectivity
+          echo "LD_LIBRARY_PATH=$HOME/wallet" >> $GITHUB_ENV  # Needed for Linux
+
+      - name: Test Connection
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
           ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
-          ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
-          ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
+          DB_ALIAS: ${{ secrets.DB_ALIAS }}  # e.g., "myadb_high"
         run: |
-          sql /nolog <<EOF
+          echo "Testing connection to $DB_ALIAS..."
+          $HOME/sqlcl/bin/sql -v /nolog <<EOF
           set cloudconfig $TNS_ADMIN
-          connect $ORACLE_USER/$ORACLE_PASSWORD@$${{ vars.DB_ALIAS }}
-          SELECT SYSDATE FROM DUAL;
+          connect $ORACLE_USER/$ORACLE_PASSWORD@$DB_ALIAS
+          SELECT 'Success! SYSDATE: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') FROM DUAL;
           exit;
           EOF
-    
