@@ -103,7 +103,7 @@ jobs:
         run: |
           sql /nolog <<EOF
           set cloudconfig $TNS_ADMIN
-          connect $ORACLE_USER/$ORACLE_PASSWORD@$${{ secrets.DB_ALAIS }}
+          connect $ORACLE_USER/$ORACLE_PASSWORD@$${{ vars.DB_ALIAS }}
           SELECT SYSDATE FROM DUAL;
           exit;
           EOF
