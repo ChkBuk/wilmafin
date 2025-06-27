@@ -31,13 +31,28 @@ jobs:
 
       - name: Install SQLcl 
         run: |
-          SQLCL_DIR="$HOME/sqlcl"
-          mkdir -p "$SQLCL_DIR"
+          # Cleanup previous installs
+          rm -rf ~/sqlcl
+          
+          # Download and extract
+          mkdir -p ~/sqlcl
+          cd ~/sqlcl
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip -q sqlcl.zip -d "$SQLCL_DIR"
+          unzip -q sqlcl.zip
           rm sqlcl.zip
-          chmod +x "$SQLCL_DIR/bin/sql"
-          echo "$SQLCL_DIR/bin" >> $GITHUB_PATH
+          
+          # Handle nested directory (common in Oracle downloads)
+          if [ -d "sqlcl" ]; then
+            mv sqlcl/* .
+            rmdir sqlcl
+          fi
+          
+          # Verify installation
+          echo "SQLcl version:"
+          ~/sqlcl/bin/sql -version
+          
+          # Add to PATH
+          echo "$HOME/sqlcl/bin" >> $GITHUB_PATH
 
       - name: Configure Wallet
         run: |
