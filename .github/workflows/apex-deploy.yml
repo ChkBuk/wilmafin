@@ -41,7 +41,7 @@ jobs:
           else
             ls -la oci_wallet/
           fi
-    
+
 
       - name: Setup Java 17
         uses: actions/setup-java@v3
@@ -93,8 +93,6 @@ jobs:
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
       
-
-      
       - name: Check TNS connectivity
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
@@ -103,9 +101,10 @@ jobs:
           ORACLE_PORT: ${{ secrets.ORACLE_PORT }}
           ORACLE_SERVICE: ${{ secrets.ORACLE_SERVICE }}
         run: |
-          echo "Testing with TNS entry..."
-          
-          # Single-line TNS descriptor (no line breaks)
-          TNS_DESCRIPTOR="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=$ORACLE_HOST)(PORT=$ORACLE_PORT))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=$ORACLE_SERVICE)))"
-          
-          $HOME/sqlcl/bin/sql -l "$ORACLE_USER/$ORACLE_PASSWORD@$TNS_DESCRIPTOR" <<< "SELECT 'TNS connection test' FROM DUAL;"
+          sql /nolog <<EOF
+          set cloudconfig $TNS_ADMIN
+          connect $ORACLE_USER/$ORACLE_PASSWORD@$${{ secrets.DB_ALAIS }}
+          SELECT SYSDATE FROM DUAL;
+          exit;
+          EOF
+    
