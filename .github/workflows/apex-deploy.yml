@@ -61,7 +61,7 @@ jobs:
       - name: Configure Wallet
         run: |
           mkdir -p $HOME/wallet
-          cp -r oci_wallet/* $HOME/wallet/
+          cp -r oci_wallet/oci_wallet/* $HOME/wallet/
           sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
         shell: bash
 
