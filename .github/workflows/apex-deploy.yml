@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: self-hosted  
+    runs-on: Chariths-MacBook-Pro
     steps:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
