@@ -75,7 +75,7 @@ jobs:
         env:
           ORACLE_USER: ${{ secrets.DB_USER }}
           ORACLE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_ALIAS: ${{ secrets.DB_ALIAS }}  # e.g., "myadb_high"
+          DB_ALIAS: ${{ secrets.DB_ALIAS }} 
         run: |
           echo "Testing connection to $DB_ALIAS..."
           $HOME/sqlcl/bin/sql -l /nolog <<EOF
