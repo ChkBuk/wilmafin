@@ -1,8 +1,10 @@
 name: Query SYSDATE from Oracle Autonomous DB
 
 on: [push]
+
 permissions:
   contents: read 
+
 jobs:
   query-sysdate:
     environment: Development
@@ -10,17 +12,10 @@ jobs:
     steps:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
-        
+
       - name: Print variables
         run: |
           echo ${{ secrets.ACCESS_TOKEN }}
-          
-      - name: Checkout private wallet repo
-        uses: actions/checkout@v4
-        with:
-          repository: ChkBuk/secretsrepo
-          path: oci_wallet
-          token: "${{ secrets.ACCESS_TOKEN }}"
 
       - name: Checkout private wallet repo
         uses: actions/checkout@v4
@@ -28,21 +23,15 @@ jobs:
           repository: ChkBuk/secretsrepo
           path: oci_wallet
           token: "${{ secrets.ACCESS_TOKEN }}"
-      
+
       - name: Debug Wallet Structure
         run: |
           echo "===== Repository Structure ====="
           find . -type d | sort
-          
-          echo "===== oci_wallet Contents ====="
-          if [ -d "oci_wallet/oci_wallet" ]; then
-            echo "⚠️ Nested oci_wallet directory found!"
-            ls -la oci_wallet/oci_wallet/
-          else
-            ls -la oci_wallet/
-          fi
-    
 
+          echo "===== oci_wallet Contents ====="
+          ls -la oci_wallet/
+      
       - name: Setup Java 17
         uses: actions/setup-java@v3
         with:
@@ -51,40 +40,28 @@ jobs:
 
       - name: Install SQLcl 
         run: |
-          # Clean up any existing installations
           sudo rm -f /usr/bin/sql
-          
-          # Setup directories
           SQLCL_DIR="$HOME/sqlcl"
           mkdir -p "$SQLCL_DIR"
           cd "$SQLCL_DIR"
-          
-          # Download and extract
           echo "Downloading SQLcl..."
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
           unzip -q sqlcl.zip -d "$SQLCL_DIR"
           rm sqlcl.zip
-          
-          # Handle nested directory structure
           if [ -d "$SQLCL_DIR/sqlcl" ]; then
             echo "Moving files from nested directory..."
             mv "$SQLCL_DIR/sqlcl"/* "$SQLCL_DIR"/
             rm -r "$SQLCL_DIR/sqlcl"
           fi
-          
-          # Set permissions
           chmod +x "$SQLCL_DIR/bin/sql"
-          
-          # Verify installation
           echo "SQLcl version:"
           "$SQLCL_DIR/bin/sql" -version
-          
-          # Add to PATH
           echo "$SQLCL_DIR/bin" >> $GITHUB_PATH
+
       - name: Configure Wallet
         run: |
           mkdir -p $HOME/wallet
-          cp -r oci_wallet/oci_wallet/* $HOME/wallet/
+          cp -r oci_wallet/* $HOME/wallet/
           sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
         shell: bash
 
@@ -92,20 +69,16 @@ jobs:
         run: |
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
           echo "PATH=$PATH:$(pwd)/sqlcl/bin" >> $GITHUB_ENV
-      
 
-      
       - name: Check TNS connectivity
         env:
           ORACLE_USER: "admin"
-          ORACLE_PASSWORD: "MahindaCollege2000"
+          ORACLE_PASSWORD: "MahindaCollege2000!"
           ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
           ORACLE_PORT: "1522"
           ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
         run: |
+          export TNS_ADMIN=$HOME/wallet
           echo "Testing with TNS entry..."
-          
-          # Single-line TNS descriptor (no line breaks)
           TNS_DESCRIPTOR="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=$ORACLE_HOST)(PORT=$ORACLE_PORT))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=$ORACLE_SERVICE)))"
-          
           $HOME/sqlcl/bin/sql -l "$ORACLE_USER/$ORACLE_PASSWORD@$TNS_DESCRIPTOR" <<< "SELECT 'TNS connection test' FROM DUAL;"
