@@ -6,9 +6,8 @@ permissions:
   contents: read 
 
 jobs:
-  query-sysdate:
-    environment: Development
-    runs-on: ubuntu-latest
+  build:
+    runs-on: self-hosted  
     steps:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
