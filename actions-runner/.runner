@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 21,
+  "agentName": "Chariths-MacBook-Pro",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus10.actions.githubusercontent.com/vOj76EvJyInVkkAB2IfjN4kfkaBvfShcTMJOY6jHo0BLAfp5nj/",
+  "gitHubUrl": "https://github.com/ChkBuk/wilmafin",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}
