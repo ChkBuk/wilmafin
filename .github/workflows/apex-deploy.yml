@@ -63,6 +63,8 @@ jobs:
           mkdir -p $HOME/wallet
           cp -r oci_wallet/oci_wallet/* $HOME/wallet/
           sed -i 's|?/network/admin|$TNS_ADMIN|g' $HOME/wallet/sqlnet.ora
+          echo "=====  $HOME/wallet Contents ====="
+          ls -la wallet/
         shell: bash
 
       - name: Set Env Variables
