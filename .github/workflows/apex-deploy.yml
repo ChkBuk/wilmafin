@@ -98,7 +98,7 @@ jobs:
       - name: Check TNS connectivity
         env:
           ORACLE_USER: "admin"
-          ORACLE_PASSWORD: "MahindaCollege2000!"
+          ORACLE_PASSWORD: "MahindaCollege2000"
           ORACLE_HOST: "adb.ap-melbourne-1.oraclecloud.com"
           ORACLE_PORT: "1522"
           ORACLE_SERVICE: "ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com"
