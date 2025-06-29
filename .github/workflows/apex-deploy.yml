@@ -45,7 +45,7 @@ jobs:
           cd "$SQLCL_DIR"
           echo "Downloading SQLcl..."
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip -q sqlcl.zip -d "$SQLCL_DIR"
+          unzip -o -q sqlcl.zip -d "$SQLCL_DIR"
           rm sqlcl.zip
           if [ -d "$SQLCL_DIR/sqlcl" ]; then
             echo "Moving files from nested directory..."
