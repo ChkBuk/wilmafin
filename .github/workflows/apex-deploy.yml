@@ -49,7 +49,7 @@ jobs:
           rm sqlcl.zip
           if [ -d "$SQLCL_DIR/sqlcl" ]; then
             echo "Moving files from nested directory..."
-            mv "$SQLCL_DIR/sqlcl"/* "$SQLCL_DIR"/
+            rsync -a "$SQLCL_DIR/sqlcl/" "$SQLCL_DIR/"
             rm -r "$SQLCL_DIR/sqlcl"
           fi
           chmod +x "$SQLCL_DIR/bin/sql"
