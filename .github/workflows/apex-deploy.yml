@@ -39,7 +39,7 @@ jobs:
 
       - name: Install SQLcl 
         run: |
-          sudo rm -f /usr/bin/sql
+          rm -f /usr/bin/sql
           SQLCL_DIR="$HOME/sqlcl"
           mkdir -p "$SQLCL_DIR"
           cd "$SQLCL_DIR"
