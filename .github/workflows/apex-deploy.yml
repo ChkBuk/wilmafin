@@ -11,7 +11,11 @@ jobs:
     steps:
       - name: Checkout Public Repo
         uses: actions/checkout@v4
-
+        
+      - name: Get Private IP Address
+        run: |
+          hostname -I || ipconfig getifaddr en0
+          
       - name: Print variables
         run: |
           echo ${{ secrets.ACCESS_TOKEN }}
