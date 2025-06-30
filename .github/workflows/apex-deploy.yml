@@ -76,7 +76,7 @@ jobs:
       - name: Install APEX Application
         run: |
           sql -S ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.DB_CONNECTION_STRING }} <<EOF
-          "SELECT 'TNS connection test' FROM DUAL;"
+          @f105/install.sql
           exit
           EOF
         env:
