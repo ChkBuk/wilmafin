@@ -75,12 +75,9 @@ jobs:
 
       - name: Install APEX Application
         run: |
-          sql -S ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.DB_CONNECTION_STRING }} <<EOF
-          @f105/install.sql
-          exit
-          EOF
+          echo '@f105/install.sql
+          exit' | sql -S "${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.DB_CONNECTION_STRING }}"
         env:
-          # TNS_ADMIN is already set in the environment from the previous step
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
