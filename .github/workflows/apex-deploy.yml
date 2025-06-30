@@ -69,7 +69,22 @@ jobs:
           echo "=====  $HOME/wallet Contents ====="
           ls -la $HOME/wallet/
         shell: bash
+        
+      - name: Set TNS_ADMIN environment variable
+        run: echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
 
+      - name: Install APEX Application
+        run: |
+          sql -S ${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.DB_CONNECTION_STRING }} <<EOF
+          "SELECT 'TNS connection test' FROM DUAL;"
+          exit
+          EOF
+        env:
+          # TNS_ADMIN is already set in the environment from the previous step
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          
       - name: Set Env Variables
         run: |
           echo "TNS_ADMIN=$HOME/wallet" >> $GITHUB_ENV
