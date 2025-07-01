@@ -76,7 +76,7 @@ jobs:
       - name: Install APEX Application
         run: |
           echo '@f105/install.sql
-          exit' | sql -S "${{ secrets.DB_USER }}/${{ secrets.DB_PASSWORD }}@${{ secrets.DB_CONNECTION_STRING }}"
+          exit' | sql -S admin/MahindaCollege2000!@(description=(address=(protocol=tcps)(port=1522)(host=adb.ap-melbourne-1.oraclecloud.com))(connect_data=(service_name=ga8e55f0b539d22_sldevdb_high.adb.oraclecloud.com)))
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
